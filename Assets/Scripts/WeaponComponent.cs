@@ -4,7 +4,11 @@ using UnityEngine;
 public class WeaponComponent : MonoBehaviour
 {
     [SerializeField] Vector3 _zoomWeaponPos;
-    [SerializeField] public float _zoomFOV = 50f;
+    [SerializeField] Transform _barrelPos;
+    [SerializeField] private float _zoomFOV = 50f;
+    [SerializeField] private int _damageWeapon = 30;
+    [SerializeField] private float _speedBullet = 1.0f;
+    [SerializeField] private float _fireRate = 0.2f;
     Vector3 _normalWeaponPos;
     private const float TimeToZoom = 0.04f;
 
@@ -13,29 +17,13 @@ public class WeaponComponent : MonoBehaviour
         _normalWeaponPos = transform.localPosition;
     }
 
-
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
     public void ZoomIn()
     {
-        //transform.localPosition = _zoomWeaponPos;
-
         StartCoroutine(MoveToPos(_zoomWeaponPos));
     }
 
     public void ZoomOut()
     {
-        //transform.localPosition = _normalWeaponPos;
         StartCoroutine(MoveToPos(_normalWeaponPos));
     }
 
@@ -57,6 +45,21 @@ public class WeaponComponent : MonoBehaviour
     public float GetZoomFOV()
     {
         return _zoomFOV;
+    }
+    public float GetFireRate()
+    {
+        return _fireRate;
+    }
+
+    public void Shoot()
+    {
+        GameObject bullet = BulletsManager.Instance.RequestBullet();
+        if (bullet != null)
+        {
+            bullet.transform.position = _barrelPos.position;
+            bullet.transform.forward = _barrelPos.forward;
+            bullet.GetComponent<BulletComponent>().SetBulletActive(_damageWeapon, _speedBullet);
+        }
     }
 
 }

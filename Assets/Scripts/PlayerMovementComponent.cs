@@ -45,4 +45,23 @@ public class PlayerMovementComponent : MonoBehaviour
         }
     }
 
+
+    public void Shoot(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            InvokeRepeating("ShootWeapon", 0f, _currentWeapon.GetFireRate());
+        }
+
+        else if(context.canceled)
+        {
+            CancelInvoke("ShootWeapon");
+        }
+
+    }
+
+    private void ShootWeapon()
+    {
+        _currentWeapon.Shoot();
+    }
 }
