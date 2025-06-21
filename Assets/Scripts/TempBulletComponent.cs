@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class BulletHoleComponent : MonoBehaviour
+public class TempBulletComponent : MonoBehaviour
 {
-    private const float LifeTime = 20f;
+    [SerializeField] private float LifeTime = 20f;
 
     public void SetActive()
     {

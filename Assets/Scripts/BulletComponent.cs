@@ -17,7 +17,7 @@ public class BulletComponent : MonoBehaviour
 
         //check if hit player/enemy
         RaycastHit hit;
-        if (Physics.Linecast(prevPos, nextPos, out hit, LayerMask.GetMask("Hittable"))) //not including the walls and stuff for "bullet hole" 
+        if (Physics.Linecast(prevPos, nextPos, out hit, LayerMask.GetMask("Hittable", "Damageable"))) //not including the walls and stuff for "bullet hole" 
         {
             if(hit.collider.gameObject.CompareTag("Player") || hit.collider.gameObject.CompareTag("Enemy"))
             {

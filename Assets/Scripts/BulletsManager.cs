@@ -8,10 +8,13 @@ public class BulletsManager : MonoBehaviour
     [SerializeField] private int _maxBulletHoles;
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private GameObject _bulletHolePrefab;
+    [SerializeField] private GameObject _bulletShellPrefab;
     private GameObject[] _bullets;
     private float[] _bulletsActiveTime;
     private GameObject[] _bulletHolesObject;
     private float[] _bulletHolesActiveTime;
+    private GameObject[] _bulletShellsObject;
+    private float[] _bulletShellsActiveTime;
 
     private void Awake()
     {
@@ -40,6 +43,15 @@ public class BulletsManager : MonoBehaviour
         {
             _bulletHolesObject[i] = Instantiate(_bulletHolePrefab);
             _bulletHolesObject[i].SetActive(false);
+        }
+
+        //bulletShells
+        _bulletShellsObject = new GameObject[_maxBullets]; 
+        _bulletShellsActiveTime = new float[_maxBullets];
+        for (int i = 0; i < _maxBullets; i++)
+        {
+            _bulletShellsObject[i] = Instantiate(_bulletShellPrefab);
+            _bulletShellsObject[i].SetActive(false);
         }
     }
 
@@ -86,7 +98,7 @@ public class BulletsManager : MonoBehaviour
             if (!_bulletHolesObject[i].activeSelf)
             {
                 _bulletHolesObject[i].gameObject.SetActive(true);
-                _bulletHolesObject[i].GetComponent<BulletHoleComponent>().SetActive();
+                _bulletHolesObject[i].GetComponent<TempBulletComponent>().SetActive();
                 _bulletHolesActiveTime[i] = Time.time;
                 return _bulletHolesObject[i];
             }
@@ -103,11 +115,47 @@ public class BulletsManager : MonoBehaviour
         Debug.Log("No BulletHoles left in Memory Pool");
         Debug.Log("Getting Oldest One");
 
-        BulletHoleComponent bulletHoleComponent = _bulletHolesObject[oldestIndex].GetComponent<BulletHoleComponent>();
-        bulletHoleComponent.SetInactive();
+        TempBulletComponent TempBulletComponent = _bulletHolesObject[oldestIndex].GetComponent<TempBulletComponent>();
+        TempBulletComponent.SetInactive();
         _bulletHolesObject[oldestIndex].gameObject.SetActive(true);
-        bulletHoleComponent.SetActive();
+        TempBulletComponent.SetActive();
         _bulletHolesActiveTime[oldestIndex] = Time.time;
         return _bulletHolesObject[oldestIndex];
     }
+
+    public GameObject RequestBulletShellObject()
+    {
+        int oldestIndex = -1;
+        float oldestTime = float.MaxValue;
+
+        for (int i = 0; i < _bulletShellsObject.Length; i++)
+        {
+            if (!_bulletShellsObject[i].activeSelf)
+            {
+                _bulletShellsObject[i].gameObject.SetActive(true);
+                _bulletShellsObject[i].GetComponent<TempBulletComponent>().SetActive();
+                _bulletShellsActiveTime[i] = Time.time;
+                return _bulletShellsObject[i];
+            }
+            else //object is active (for when memory pool is all active)
+            {
+                if (_bulletShellsActiveTime[i] < oldestTime)
+                {
+                    oldestIndex = i;
+                    oldestTime = _bulletShellsActiveTime[i];
+                }
+            }
+        }
+
+        Debug.Log("No BulletShells left in Memory Pool");
+        Debug.Log("Getting Oldest One");
+
+        TempBulletComponent BulletShellComponent = _bulletShellsObject[oldestIndex].GetComponent<TempBulletComponent>();
+        BulletShellComponent.SetInactive();
+        _bulletShellsObject[oldestIndex].gameObject.SetActive(true);
+        BulletShellComponent.SetActive();
+        _bulletShellsActiveTime[oldestIndex] = Time.time;
+        return _bulletShellsObject[oldestIndex];
+    }
+
 }

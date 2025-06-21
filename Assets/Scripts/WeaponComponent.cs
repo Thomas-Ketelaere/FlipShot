@@ -1,13 +1,17 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using static FullScreenPassRendererFeature;
 
 public class WeaponComponent : MonoBehaviour
 {
     [SerializeField] Vector3 _zoomWeaponPos;
     [SerializeField] Transform _barrelPos;
+    [SerializeField] Transform _ejectionPoint;
     [SerializeField] TMP_Text _amountBulletsText;
     [SerializeField] GameObject _magazine;
+    [SerializeField] GameObject _bolt;
     [SerializeField] Vector3 _magazineCheckPos;
     [SerializeField] Vector3 _magazineCheckRot;
     [SerializeField] private float _zoomFOV = 50f;
@@ -20,6 +24,7 @@ public class WeaponComponent : MonoBehaviour
     Vector3 _normalWeaponPos;
     Vector3 _normalWeaponRot;
     Vector3 _normalMagPos;
+    Vector3 _normalBoltPos;
     private const float TimeToZoom = 0.04f;
     private float _accumulatedTime;
     private bool _shouldShoot;
@@ -31,6 +36,7 @@ public class WeaponComponent : MonoBehaviour
         _normalWeaponPos = transform.localPosition;
         _normalMagPos = _magazine.transform.localPosition;
         _normalWeaponRot = transform.eulerAngles;
+        _normalBoltPos = _bolt.transform.localPosition;
         _currentAmountBullets = _maxBullets;
         _amountBulletsText.enabled = false;
         SetAmountBulletsText();
@@ -105,9 +111,35 @@ public class WeaponComponent : MonoBehaviour
             bullet.transform.position = _barrelPos.position;
             bullet.transform.forward = _barrelPos.forward;
             bullet.GetComponent<BulletComponent>().SetBulletActive(_damageWeapon, _speedBullet);
+            SpawnBulletShell();
+            StartCoroutine(MoveToPos(_bolt.transform, _bolt.transform.localPosition + new Vector3(0, 0, -0.07f), _fireRate/3));
+            Invoke("StartResetBolt", _fireRate / 3);
         }
         --_currentAmountBullets;
         SetAmountBulletsText();
+    }
+
+    private void SpawnBulletShell()
+    {
+        GameObject bulletShell = BulletsManager.Instance.RequestBulletShellObject();
+        bulletShell.transform.position = _ejectionPoint.position;
+        bulletShell.transform.rotation = _ejectionPoint.rotation;
+
+        Rigidbody shellRb = bulletShell.GetComponentInChildren<Rigidbody>();
+
+        shellRb.linearVelocity = Vector3.zero;
+        shellRb.angularVelocity = Vector3.zero;
+
+        Vector3 ejectionForce = _ejectionPoint.right * Random.Range(1.0f, 2.0f) + _ejectionPoint.up * Random.Range(0.5f, 1.0f);
+        Vector3 spinTorque = Random.insideUnitSphere * 5f;
+
+        shellRb.AddForce(ejectionForce, ForceMode.Impulse);
+        shellRb.AddTorque(spinTorque, ForceMode.Impulse);
+    }
+
+    private void StartResetBolt()
+    {
+        StartCoroutine(MoveToPos(_bolt.transform, _normalBoltPos, _fireRate / 3));
     }
 
     public void StartShooting()
