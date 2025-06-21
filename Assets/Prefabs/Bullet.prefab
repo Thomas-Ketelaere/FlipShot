@@ -131,3 +131,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa67812c7278554ba42a01da3bf4b16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bulletHoleWallObj: {fileID: 5647700623403263248, guid: b009ffbf588c9874bb4a3f355894ff2f, type: 3}
+  _bulletHoleGlassObj: {fileID: 0}

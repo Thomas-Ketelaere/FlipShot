@@ -50,18 +50,28 @@ public class PlayerMovementComponent : MonoBehaviour
     {
         if (context.started)
         {
-            InvokeRepeating("ShootWeapon", 0f, _currentWeapon.GetFireRate());
+            _currentWeapon.StartShooting();
         }
 
         else if(context.canceled)
         {
-            CancelInvoke("ShootWeapon");
+            _currentWeapon.StopShooting();
         }
-
     }
 
-    private void ShootWeapon()
+    public void Reload(InputAction.CallbackContext context)
     {
-        _currentWeapon.Shoot();
+        if (context.started)
+        {
+            _currentWeapon.StartReloading();
+        }
+    }
+
+    public void CheckAmountBullets(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            _currentWeapon.StartCheckingAmountBullets();
+        }
     }
 }
