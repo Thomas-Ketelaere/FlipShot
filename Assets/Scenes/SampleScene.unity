@@ -526,6 +526,10 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 428503729496200925, guid: 11494a5102e843b44993595506c6a022, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.39
+      objectReference: {fileID: 0}
     - target: {fileID: 815535404953242916, guid: 11494a5102e843b44993595506c6a022, type: 3}
       propertyPath: _bolt
       value: 
@@ -593,10 +597,35 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 126621016}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1061030317445172327, guid: 11494a5102e843b44993595506c6a022, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 970516499253035496}
     - targetCorrespondingSourceObject: {fileID: 8171257236550194138, guid: 11494a5102e843b44993595506c6a022, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 11494a5102e843b44993595506c6a022, type: 3}
+--- !u!1 &970516499253035495 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1061030317445172327, guid: 11494a5102e843b44993595506c6a022, type: 3}
+  m_PrefabInstance: {fileID: 970516499253035494}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &970516499253035496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970516499253035495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faed974d09acd3d4f885f6344f721183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _recoilX: -2
+  _recoilY: 2
+  _recoilZ: 0.35
+  _snappiness: 6
+  _returnSpeed: 20
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

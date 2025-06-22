@@ -30,6 +30,8 @@ public class WeaponComponent : MonoBehaviour
     private bool _shouldShoot;
     private int _currentAmountBullets;
 
+    //recoil
+    private RecoilComponent _recoilComponent;
 
     private void Awake()
     {
@@ -40,6 +42,11 @@ public class WeaponComponent : MonoBehaviour
         _currentAmountBullets = _maxBullets;
         _amountBulletsText.enabled = false;
         SetAmountBulletsText();
+    }
+
+    private void Start()
+    {
+        _recoilComponent = GetComponent<RecoilComponent>();
     }
 
     public void ZoomIn()
@@ -113,10 +120,12 @@ public class WeaponComponent : MonoBehaviour
             bullet.GetComponent<BulletComponent>().SetBulletActive(_damageWeapon, _speedBullet);
             SpawnBulletShell();
             StartCoroutine(MoveToPos(_bolt.transform, _bolt.transform.localPosition + new Vector3(0, 0, -0.07f), _fireRate/3));
+            StartCoroutine(MoveToPos(transform, transform.localPosition + new Vector3(0, 0, -0.05f), _fireRate / 3));
             Invoke("StartResetBolt", _fireRate / 3);
         }
         --_currentAmountBullets;
         SetAmountBulletsText();
+        _recoilComponent.AddRecoil();
     }
 
     private void SpawnBulletShell()
@@ -140,6 +149,8 @@ public class WeaponComponent : MonoBehaviour
     private void StartResetBolt()
     {
         StartCoroutine(MoveToPos(_bolt.transform, _normalBoltPos, _fireRate / 3));
+
+        StartCoroutine(MoveToPos(transform, transform.localPosition + new Vector3(0, 0, 0.05f), _fireRate / 3));
     }
 
     public void StartShooting()
@@ -177,6 +188,7 @@ public class WeaponComponent : MonoBehaviour
     {
         if(!IsInvoking("StopCheckingAmountBullets"))
         {
+            _recoilComponent.ResetRecoil();
             Invoke("StopCheckingAmountBullets", _checkAmountBulletsTime);
             Invoke("ReturnFromCheckingAmountBullets", _checkAmountBulletsTime / 2);
             StartCoroutine(MoveToPos(transform, _magazineCheckPos, _checkAmountBulletsTime / 4));
