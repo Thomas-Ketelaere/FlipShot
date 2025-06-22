@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletsManager : MonoBehaviour
@@ -9,6 +11,7 @@ public class BulletsManager : MonoBehaviour
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private GameObject _bulletShellPrefab;
+    [SerializeField] private List<GameObject> _bloodWallPrefabs = new List<GameObject>();
     private GameObject[] _bullets;
     private float[] _bulletsActiveTime;
     private GameObject[] _bulletHolesObject;
@@ -156,6 +159,13 @@ public class BulletsManager : MonoBehaviour
         BulletShellComponent.SetActive();
         _bulletShellsActiveTime[oldestIndex] = Time.time;
         return _bulletShellsObject[oldestIndex];
+    }
+
+    public GameObject RequestBloodWallObject() //TODO: maybe also with memory pool?
+    {
+        GameObject randomBloodPrefab = _bloodWallPrefabs[Random.Range(0, _bloodWallPrefabs.Count)];
+        GameObject bloodWallObject = Instantiate(randomBloodPrefab);
+        return bloodWallObject;
     }
 
 }

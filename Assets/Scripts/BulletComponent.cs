@@ -8,6 +8,7 @@ public class BulletComponent : MonoBehaviour
     private int _damage;
     private float _speed;
     private const float LifeTime = 1f;
+    private const float DistanceWallForBlood = 3f;
 
     // Update is called once per frame
     void FixedUpdate()
@@ -23,6 +24,18 @@ public class BulletComponent : MonoBehaviour
             {
                 Debug.Log("Player/Enemy hit");
                 //get health comp and do damage
+                RaycastHit wallHit;
+                if (Physics.Raycast(hit.point, transform.forward, out wallHit, DistanceWallForBlood, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player
+                {
+                    GameObject bloodObject = BulletsManager.Instance.RequestBloodWallObject();
+                    if (bloodObject != null)
+                    {
+                        bloodObject.transform.position = wallHit.point + wallHit.normal * 0.01f;
+                        Quaternion lookRot = Quaternion.LookRotation(-wallHit.normal);
+                        lookRot *= Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward);
+                        bloodObject.transform.rotation = lookRot;
+                    }
+                }
             }
 
             else if(hit.collider.gameObject.CompareTag("Object"))
