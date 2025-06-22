@@ -12,6 +12,7 @@ public class WeaponComponent : MonoBehaviour
     [SerializeField] TMP_Text _amountBulletsText;
     [SerializeField] GameObject _magazine;
     [SerializeField] GameObject _bolt;
+    [SerializeField] ParticleSystem _muzzleFlash;
     [SerializeField] Vector3 _magazineCheckPos;
     [SerializeField] Vector3 _magazineCheckRot;
     [SerializeField] private float _zoomFOV = 50f;
@@ -21,6 +22,7 @@ public class WeaponComponent : MonoBehaviour
     [SerializeField] private float _reloadTime = 1f;
     [SerializeField] private float _checkAmountBulletsTime = 2f;
     [SerializeField] private int _maxBullets = 30;
+    [SerializeField] private float _bulletExtraDirUp = 0.1f;
     Vector3 _normalWeaponPos;
     Vector3 _normalWeaponRot;
     Vector3 _normalMagPos;
@@ -112,11 +114,12 @@ public class WeaponComponent : MonoBehaviour
 
     private void Shoot()
     {
+        _muzzleFlash.Play();
         GameObject bullet = BulletsManager.Instance.RequestBullet();
         if (bullet != null)
         {
             bullet.transform.position = _barrelPos.position;
-            bullet.transform.forward = _barrelPos.forward;
+            bullet.transform.forward = _barrelPos.forward + new Vector3(0, _bulletExtraDirUp, 0); //sending bullet a tad up to get equal with sight
             bullet.GetComponent<BulletComponent>().SetBulletActive(_damageWeapon, _speedBullet);
             SpawnBulletShell();
             StartCoroutine(MoveToPos(_bolt.transform, _bolt.transform.localPosition + new Vector3(0, 0, -0.07f), _fireRate/3));

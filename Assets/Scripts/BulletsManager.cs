@@ -98,7 +98,7 @@ public class BulletsManager : MonoBehaviour
             if (!_bulletHolesObject[i].activeSelf)
             {
                 _bulletHolesObject[i].gameObject.SetActive(true);
-                _bulletHolesObject[i].GetComponent<TempBulletComponent>().SetActive();
+                _bulletHolesObject[i].GetComponent<BulletHoleComponent>().SetActive();
                 _bulletHolesActiveTime[i] = Time.time;
                 return _bulletHolesObject[i];
             }
@@ -115,10 +115,10 @@ public class BulletsManager : MonoBehaviour
         Debug.Log("No BulletHoles left in Memory Pool");
         Debug.Log("Getting Oldest One");
 
-        TempBulletComponent TempBulletComponent = _bulletHolesObject[oldestIndex].GetComponent<TempBulletComponent>();
-        TempBulletComponent.SetInactive();
+        BulletHoleComponent bulletHoleComponent = _bulletHolesObject[oldestIndex].GetComponent<BulletHoleComponent>();
+        bulletHoleComponent.SetInactive();
         _bulletHolesObject[oldestIndex].gameObject.SetActive(true);
-        TempBulletComponent.SetActive();
+        bulletHoleComponent.SetActive();
         _bulletHolesActiveTime[oldestIndex] = Time.time;
         return _bulletHolesObject[oldestIndex];
     }

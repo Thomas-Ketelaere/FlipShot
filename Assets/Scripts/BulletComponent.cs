@@ -30,14 +30,14 @@ public class BulletComponent : MonoBehaviour
                 GameObject bulletHoleObj = BulletsManager.Instance.RequestBulletHoleObject();
                 if (bulletHoleObj != null)
                 {
-                    bulletHoleObj.transform.position = hit.point + hit.normal * 0.1f;
+                    bulletHoleObj.transform.position = hit.point + hit.normal * 0.01f;
                     bulletHoleObj.transform.rotation = Quaternion.LookRotation(-hit.normal);
                 }
             }
 
             else if (hit.collider.gameObject.CompareTag("Glass"))
             {
-                Instantiate(_bulletHoleGlassObj, hit.point + hit.normal * 0.1f, Quaternion.LookRotation(-hit.normal));
+                Instantiate(_bulletHoleGlassObj, hit.point + hit.normal * 0.01f, Quaternion.LookRotation(-hit.normal));
             }
 
             CancelInvoke("SetBulletInactive");
