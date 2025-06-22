@@ -564,6 +564,7 @@ MonoBehaviour:
   _bulletPrefab: {fileID: 6598919308417596950, guid: 9626505ab1720ea4da7c3d8cc84f7435, type: 3}
   _bulletHolePrefab: {fileID: 5647700623403263248, guid: b009ffbf588c9874bb4a3f355894ff2f, type: 3}
   _bulletShellPrefab: {fileID: 6521784219580731756, guid: bb890e2c90a223341bcd56c1f5aa29ad, type: 3}
+  _maxBloodWalls: 15
   _bloodWallPrefabs:
   - {fileID: 7306485293313508579, guid: 0ef9e33b4d798564480c0393ab420ab4, type: 3}
   - {fileID: 7306485293313508579, guid: baf941383b5e9e648b7a2670374622fe, type: 3}
@@ -662,17 +663,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 815535404953242916, guid: 11494a5102e843b44993595506c6a022, type: 3}
-      propertyPath: _bulletExtraDirUp
-      value: 0.005
-      objectReference: {fileID: 0}
     - target: {fileID: 1240287979550573056, guid: 11494a5102e843b44993595506c6a022, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 1454553730078286162, guid: 11494a5102e843b44993595506c6a022, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.109
       objectReference: {fileID: 0}
     - target: {fileID: 3077442385965927434, guid: 11494a5102e843b44993595506c6a022, type: 3}
       propertyPath: m_LocalPosition.x
@@ -713,6 +706,18 @@ PrefabInstance:
     - target: {fileID: 3077442385965927434, guid: 11494a5102e843b44993595506c6a022, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8311723891951746152, guid: 11494a5102e843b44993595506c6a022, type: 3}
+      propertyPath: _recoilX
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8311723891951746152, guid: 11494a5102e843b44993595506c6a022, type: 3}
+      propertyPath: _recoilY
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8311723891951746152, guid: 11494a5102e843b44993595506c6a022, type: 3}
+      propertyPath: _recoilZ
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -30021,6 +30021,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AR_L
       objectReference: {fileID: 0}
+    - target: {fileID: 1317518559165722394, guid: 8095ef38caf3d1f459ef19d91b36d73e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.109
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -30082,6 +30086,7 @@ MonoBehaviour:
   _reloadTime: 1
   _checkAmountBulletsTime: 2
   _maxBullets: 30
+  _bulletExtraDirUp: 0.005
 --- !u!114 &8311723891951746152
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ public class BulletComponent : MonoBehaviour
 {
     [SerializeField] private GameObject _bulletHoleWallObj;
     [SerializeField] private GameObject _bulletHoleGlassObj;
+    [SerializeField] private GameObject _bloodVFXObj;
     private int _damage;
     private float _speed;
     private const float LifeTime = 1f;
@@ -24,6 +25,9 @@ public class BulletComponent : MonoBehaviour
             {
                 Debug.Log("Player/Enemy hit");
                 //get health comp and do damage
+                GameObject bloodVFXObject = Instantiate(_bloodVFXObj);
+                bloodVFXObject.transform.position = hit.point;
+                bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal);
                 RaycastHit wallHit;
                 if (Physics.Raycast(hit.point, transform.forward, out wallHit, DistanceWallForBlood, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player
                 {

@@ -11,6 +11,7 @@ public class BulletsManager : MonoBehaviour
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private GameObject _bulletShellPrefab;
+    [SerializeField] private int _maxBloodWalls;
     [SerializeField] private List<GameObject> _bloodWallPrefabs = new List<GameObject>();
     private GameObject[] _bullets;
     private float[] _bulletsActiveTime;
@@ -18,6 +19,8 @@ public class BulletsManager : MonoBehaviour
     private float[] _bulletHolesActiveTime;
     private GameObject[] _bulletShellsObject;
     private float[] _bulletShellsActiveTime;
+    private GameObject[] _bloodWalls;
+    private float[] _bloodWallsActiveTime;
 
     private void Awake()
     {
@@ -55,6 +58,17 @@ public class BulletsManager : MonoBehaviour
         {
             _bulletShellsObject[i] = Instantiate(_bulletShellPrefab);
             _bulletShellsObject[i].SetActive(false);
+        }
+
+        // blood on walls
+        _bloodWalls = new GameObject[_maxBloodWalls];
+        _bloodWallsActiveTime = new float[_maxBloodWalls];
+
+        for (int i = 0; i < _maxBloodWalls; i++)
+        {
+            GameObject randomPrefab = _bloodWallPrefabs[Random.Range(0, _bloodWallPrefabs.Count)];
+            _bloodWalls[i] = Instantiate(randomPrefab);
+            _bloodWalls[i].SetActive(false);
         }
     }
 
@@ -101,7 +115,7 @@ public class BulletsManager : MonoBehaviour
             if (!_bulletHolesObject[i].activeSelf)
             {
                 _bulletHolesObject[i].gameObject.SetActive(true);
-                _bulletHolesObject[i].GetComponent<BulletHoleComponent>().SetActive();
+                _bulletHolesObject[i].GetComponent<BulletParticleSysComponent>().SetActive();
                 _bulletHolesActiveTime[i] = Time.time;
                 return _bulletHolesObject[i];
             }
@@ -118,7 +132,7 @@ public class BulletsManager : MonoBehaviour
         Debug.Log("No BulletHoles left in Memory Pool");
         Debug.Log("Getting Oldest One");
 
-        BulletHoleComponent bulletHoleComponent = _bulletHolesObject[oldestIndex].GetComponent<BulletHoleComponent>();
+        BulletParticleSysComponent bulletHoleComponent = _bulletHolesObject[oldestIndex].GetComponent<BulletParticleSysComponent>();
         bulletHoleComponent.SetInactive();
         _bulletHolesObject[oldestIndex].gameObject.SetActive(true);
         bulletHoleComponent.SetActive();
@@ -161,11 +175,41 @@ public class BulletsManager : MonoBehaviour
         return _bulletShellsObject[oldestIndex];
     }
 
-    public GameObject RequestBloodWallObject() //TODO: maybe also with memory pool?
+    public GameObject RequestBloodWallObject()
     {
-        GameObject randomBloodPrefab = _bloodWallPrefabs[Random.Range(0, _bloodWallPrefabs.Count)];
-        GameObject bloodWallObject = Instantiate(randomBloodPrefab);
-        return bloodWallObject;
+        int oldestIndex = -1;
+        float oldestTime = float.MaxValue;
+
+        for (int i = 0; i < _bloodWalls.Length; i++)
+        {
+            if (!_bloodWalls[i].activeSelf)
+            {
+                _bloodWalls[i].gameObject.SetActive(true);
+                _bloodWalls[i].GetComponent<TempBulletComponent>().SetActive();
+                _bloodWallsActiveTime[i] = Time.time;
+                return _bloodWalls[i];
+            }
+            else //object is active (for when memory pool is all active)
+            {
+                if (_bloodWallsActiveTime[i] < oldestTime)
+                {
+                    oldestIndex = i;
+                    oldestTime = _bloodWallsActiveTime[i];
+                }
+            }
+        }
+
+        Debug.Log("No BulletShells left in Memory Pool");
+        Debug.Log("Getting Oldest One");
+
+        TempBulletComponent BloodWallComponent = _bloodWalls[oldestIndex].GetComponent<TempBulletComponent>();
+        BloodWallComponent.SetInactive();
+        _bloodWalls[oldestIndex].gameObject.SetActive(true);
+        BloodWallComponent.SetActive();
+        _bloodWallsActiveTime[oldestIndex] = Time.time;
+        return _bloodWalls[oldestIndex];
     }
+
+
 
 }

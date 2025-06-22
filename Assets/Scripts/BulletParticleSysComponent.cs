@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BulletHoleComponent : MonoBehaviour
+public class BulletParticleSysComponent : MonoBehaviour
 {
     [SerializeField] private float LifeTime = 20f;
     [SerializeField] private ParticleSystem _bulletImpact;

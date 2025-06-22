@@ -133,3 +133,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bulletHoleWallObj: {fileID: 5647700623403263248, guid: b009ffbf588c9874bb4a3f355894ff2f, type: 3}
   _bulletHoleGlassObj: {fileID: 0}
+  _bloodVFXObj: {fileID: 787016640572962275, guid: f6b9c04316ae058409769beef2141b2b, type: 3}
