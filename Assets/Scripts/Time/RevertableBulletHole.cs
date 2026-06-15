@@ -6,8 +6,9 @@ public class RevertableBulletHole : RevertableBase
     private PlayerControlsComponent _playerMovementComponent;
     private BulletParticleSysComponent _bulletParticleSysComponent;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         _playerMovementComponent = player.GetComponent<PlayerControlsComponent>();
         _bulletParticleSysComponent = GetComponent<BulletParticleSysComponent>();

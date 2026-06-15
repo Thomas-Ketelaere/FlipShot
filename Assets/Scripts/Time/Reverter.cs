@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -26,6 +27,9 @@ public class Reverter : MonoBehaviour
     private const float TemporalTransitionDuration = 0.15f;
     private ChromaticAberration _chromaticAberration;
     private Coroutine _temporalTransition;
+
+    public UnityEvent OnEnterTemporalMode = new();
+    public UnityEvent OnExitTemporalMode = new();
 
     public bool InTemporalMode => _inTemporalMode;
 
@@ -101,12 +105,14 @@ public class Reverter : MonoBehaviour
         _overlayCamera.SetActive(true);
         if (_temporalTransition != null) StopCoroutine(_temporalTransition);
         _temporalTransition = StartCoroutine(LerpTemporalEffects(true, MaxChromaticAberration, MinDesaturationStrength));
+        OnEnterTemporalMode?.Invoke();
     }
 
     private void OnTemporalModeStop()
     {
         if (_temporalTransition != null) StopCoroutine(_temporalTransition);
         _temporalTransition = StartCoroutine(LerpTemporalEffects(false, 0f, 1f));
+        OnExitTemporalMode?.Invoke();
     }
 
     private IEnumerator LerpTemporalEffects(bool entering, float targetCA, float targetDesat)

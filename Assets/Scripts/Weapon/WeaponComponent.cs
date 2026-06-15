@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 
@@ -316,5 +317,10 @@ public class WeaponComponent : MonoBehaviour
     public void PlayMuzzleFlash()
     {
         _muzzleFlash.Play();
+    }
+
+    public Transform GetBarrelOutTransform()
+    {
+        return _barrelPos;
     }
 }

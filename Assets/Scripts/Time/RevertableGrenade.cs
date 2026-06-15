@@ -22,9 +22,9 @@ public class RevertableGrenade : RevertableBase
         _safetyLever.gameObject.SetActive(false);
     }
 
-    private void Start()
+    protected override void Start()
     {
-
+        base.Start();
         _animator = GetComponent<Animator>();
         _cameraTransform = Camera.main.transform;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
