@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 //TODO not only movement so or split up or rename
-public class PlayerMovementComponent : MonoBehaviour
+public class PlayerControlsComponent : MonoBehaviour
 {
     [SerializeField] private float _speed = 1f;
     private Rigidbody _rigidBody;
@@ -11,33 +11,25 @@ public class PlayerMovementComponent : MonoBehaviour
     private WeaponComponent _currentWeapon;
     private CameraComponent _cameraComp;
     private Transform _cameraTransform;
+    private Reverter _reverter;
 
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody>(); 
         _currentWeapon = GetComponentInChildren<WeaponComponent>();
         _cameraComp = GetComponentInChildren<CameraComponent>();
+        _reverter = GetComponent<Reverter>();
         _cameraTransform = Camera.main.transform;
     }
 
     void FixedUpdate()
     {
-        //Vector3 desiredUp = -Physics.gravity.normalized;
-        //Quaternion targetRotation = Quaternion.FromToRotation(transform.up, desiredUp) * transform.rotation;
-
-        //_rigidBody.MoveRotation(Quaternion.Slerp(
-        //    transform.rotation,
-        //    targetRotation,
-        //    Time.fixedDeltaTime * 0.5f
-        //));
-
         Vector3 rotatedMoveDirection = (_cameraTransform.forward * _inputMoveDirection.y + _cameraTransform.right * _inputMoveDirection.x).normalized;
         if(IsGrounded())
         {
             rotatedMoveDirection.y = 0f;
         }
-        Vector3 newVelocity = rotatedMoveDirection * _speed; //todo delta time
-        //newVelocity.Scale(Physics.gravity);
+        Vector3 newVelocity = rotatedMoveDirection * _speed; 
         _rigidBody.linearVelocity = newVelocity;
     }
 
@@ -64,19 +56,58 @@ public class PlayerMovementComponent : MonoBehaviour
 
     public void Shoot(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (_reverter.InTemporalMode)
+        {
+            
+            if (context.started)
+            {
+                OnReverterShoot(true);
+            }
+
+            else if (context.canceled)
+            {
+                OnReverterShoot(false);
+            }
+        }
+        else
+        {
+            if (context.started)
+            {
+                OnWeaponShoot(true);
+            }
+
+            else if (context.canceled)
+            {
+                OnWeaponShoot(false);
+            }
+        }
+
+    }
+
+    private void OnWeaponShoot(bool started)
+    {
+        if (started)
         {
             _currentWeapon.StartShooting();
         }
-
-        else if(context.canceled)
+        else
         {
             _currentWeapon.StopShooting();
         }
+
+    }
+
+    private void OnReverterShoot(bool started)
+    {
+        _reverter.Revert(started);
     }
 
     public void Reload(InputAction.CallbackContext context)
     {
+        if (_reverter.InTemporalMode)
+        {
+            return;
+        }
         if (context.started)
         {
             _currentWeapon.StartReloading();
@@ -85,6 +116,10 @@ public class PlayerMovementComponent : MonoBehaviour
 
     public void CheckAmountBullets(InputAction.CallbackContext context)
     {
+        if (_reverter.InTemporalMode)
+        {
+            return;
+        }
         if (context.started)
         {
             _currentWeapon.StartCheckingAmountBullets();

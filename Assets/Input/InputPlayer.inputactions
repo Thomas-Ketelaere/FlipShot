@@ -51,9 +51,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Revert",
+                    "name": "TemporalMode",
                     "type": "Button",
-                    "id": "dfadb080-afcb-4d0c-a1b4-2eca9d4b56b9",
+                    "id": "9d12cd9f-de4a-409c-b53e-bec107316509",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -162,12 +162,12 @@
                 },
                 {
                     "name": "",
-                    "id": "db4fe5d3-2252-4a0f-944e-5963cd573c1d",
-                    "path": "<Keyboard>/e",
+                    "id": "df7da12d-13a2-4326-9b3a-189e8dd0dc7d",
+                    "path": "<Keyboard>/leftAlt",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Revert",
+                    "action": "TemporalMode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
