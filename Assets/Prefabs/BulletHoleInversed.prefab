@@ -138,6 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c5c2da50a8777a49ac79cd010dcbf4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _aimedAtMaterial: {fileID: 2100000, guid: b26dcf69dd3200341ba6e229552f47c1, type: 2}
+  _notAimedAtMaterial: {fileID: 2100000, guid: 0a1211d844e24ba4792aaee104953be5, type: 2}
 --- !u!1001 &7259616144665065237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -149,6 +151,22 @@ PrefabInstance:
     - target: {fileID: 2906430165767477271, guid: 68651e6fe1e481e4eb6492b5998d7829, type: 3}
       propertyPath: m_Name
       value: TemporalRibbon
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981239647975499795, guid: 68651e6fe1e481e4eb6492b5998d7829, type: 3}
+      propertyPath: m_Positions.Array.data[0].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981239647975499795, guid: 68651e6fe1e481e4eb6492b5998d7829, type: 3}
+      propertyPath: m_Positions.Array.data[1].x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981239647975499795, guid: 68651e6fe1e481e4eb6492b5998d7829, type: 3}
+      propertyPath: m_Positions.Array.data[1].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981239647975499795, guid: 68651e6fe1e481e4eb6492b5998d7829, type: 3}
+      propertyPath: m_Positions.Array.data[1].z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6981239647975499795, guid: 68651e6fe1e481e4eb6492b5998d7829, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].time

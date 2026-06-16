@@ -13,7 +13,7 @@ public class BloodVFXComponent : MonoBehaviour
     public void SetActive()
     {
         Invoke("SetInactive", LifeTime);
-        _bloodEffect.Play();
+        //_bloodEffect.Play();
     }
     public void SetInactive()
     {

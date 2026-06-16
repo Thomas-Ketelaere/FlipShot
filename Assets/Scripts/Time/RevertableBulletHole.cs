@@ -19,7 +19,7 @@ public class RevertableBulletHole : RevertableBase
         if (!_isActive) return;
         
         //todo check if reverting is possible (is magazine full)
-        GameObject bulletShell = BulletsManager.Instance.RequestBulletShellObject();
+        GameObject bulletShell = ObjectPool.Instance.RequestBulletShellObject();
         Transform ejectionTransform = _playerMovementComponent.GetPlayerWeapon().GetEjectionPoint();
 
         Vector3 playerPos = _playerMovementComponent.transform.position;
@@ -36,10 +36,8 @@ public class RevertableBulletHole : RevertableBase
             shellRb.isKinematic = true;
         }
 
-        // 5. Start the reverse physics animation
         StartCoroutine(AnimateShellReverse(bulletShell, ejectionTransform));
 
-        //_playerMovementComponent.GetPlayerWeapon().AddBullet(); //this should happen when the bullet shell gets to the weapon, same for destroying this object
         //weapon Visuals
         _isActive = false;
     }
@@ -77,10 +75,10 @@ public class RevertableBulletHole : RevertableBase
 
             yield return null;
         }
-
+        _playerMovementComponent.GetPlayerWeapon().RevertShoot(transform.position);
         _playerMovementComponent.GetPlayerWeapon().AddBullet();
 
-        TempBulletComponent bulletShell = shell.GetComponent<TempBulletComponent>();
+        SingleObject bulletShell = shell.GetComponent<SingleObject>();
         bulletShell.SetInactive();
         if(_bulletParticleSysComponent  != null)
         {

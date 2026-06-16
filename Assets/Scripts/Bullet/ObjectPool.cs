@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletsManager : MonoBehaviour
+public class ObjectPool : MonoBehaviour
 {
-    public static BulletsManager Instance { get; private set; }
+    public static ObjectPool Instance { get; private set; }
 
     [SerializeField] private int _maxBullets;
     [SerializeField] private int _maxBulletHoles;
@@ -149,7 +149,7 @@ public class BulletsManager : MonoBehaviour
             if (!_bulletShellsObject[i].activeSelf)
             {
                 _bulletShellsObject[i].gameObject.SetActive(true);
-                _bulletShellsObject[i].GetComponent<TempBulletComponent>().SetActive();
+                _bulletShellsObject[i].GetComponent<SingleObject>().SetActive();
                 _bulletShellsActiveTime[i] = Time.time;
                 return _bulletShellsObject[i];
             }
@@ -166,7 +166,7 @@ public class BulletsManager : MonoBehaviour
         Debug.Log("No BulletShells left in Memory Pool");
         Debug.Log("Getting Oldest One");
 
-        TempBulletComponent BulletShellComponent = _bulletShellsObject[oldestIndex].GetComponent<TempBulletComponent>();
+        SingleObject BulletShellComponent = _bulletShellsObject[oldestIndex].GetComponent<SingleObject>();
         BulletShellComponent.SetInactive();
         _bulletShellsObject[oldestIndex].gameObject.SetActive(true);
         BulletShellComponent.SetActive();
@@ -184,7 +184,7 @@ public class BulletsManager : MonoBehaviour
             if (!_bloodWalls[i].activeSelf)
             {
                 _bloodWalls[i].gameObject.SetActive(true);
-                _bloodWalls[i].GetComponent<TempBulletComponent>().SetActive();
+                _bloodWalls[i].GetComponent<SingleObject>().SetActive();
                 _bloodWallsActiveTime[i] = Time.time;
                 return _bloodWalls[i];
             }
@@ -201,7 +201,7 @@ public class BulletsManager : MonoBehaviour
         Debug.Log("No BulletShells left in Memory Pool");
         Debug.Log("Getting Oldest One");
 
-        TempBulletComponent BloodWallComponent = _bloodWalls[oldestIndex].GetComponent<TempBulletComponent>();
+        SingleObject BloodWallComponent = _bloodWalls[oldestIndex].GetComponent<SingleObject>();
         BloodWallComponent.SetInactive();
         _bloodWalls[oldestIndex].gameObject.SetActive(true);
         BloodWallComponent.SetActive();

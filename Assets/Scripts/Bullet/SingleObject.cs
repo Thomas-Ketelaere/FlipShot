@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TempBulletComponent : MonoBehaviour
+public class SingleObject : MonoBehaviour
 {
     [SerializeField] private float LifeTime = 20f;
 

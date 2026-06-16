@@ -45,10 +45,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6521784219580731756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbc065d208075fc4c99f30668a72479b, type: 3}
+  m_Script: {fileID: 11500000, guid: daf0b642244f4624789dee7b345060e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 10
+  LifeTime: 20
 --- !u!33 &3362705559498816382
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class Reverter : MonoBehaviour
     private const float SPHERE_CAST_MAX_DISTANCE = 10f;
     private const string REVERTABLE_LAYER_NAME = "Revertable";
     private Transform _cameraTransform;
+    private RevertableChecker _revertableChecker;
 
     private bool _hadHitLastFrame;
     private float _currentHitDistance;
@@ -22,9 +23,9 @@ public class Reverter : MonoBehaviour
     [SerializeField] private GameObject _overlayCamera;
     [SerializeField] private Volume _volume;
     [SerializeField] private Material _desaturationMat;
-    private const float MaxChromaticAberration = 0.5f;
-    private const float MinDesaturationStrength = 0.1f;
-    private const float TemporalTransitionDuration = 0.15f;
+    private const float MAX_CHROMATIC_ABERRATION = 0.5f;
+    private const float MIN_DESATURATION_STRENGTH = 0.1f;
+    private const float TEMPORAL_TRANSITION_DURATION = 0.15f;
     private ChromaticAberration _chromaticAberration;
     private Coroutine _temporalTransition;
 
@@ -37,11 +38,11 @@ public class Reverter : MonoBehaviour
     {
         _reverterLayerMask = LayerMask.GetMask(REVERTABLE_LAYER_NAME);
         _cameraTransform = Camera.main.transform;
-        if (_volume.sharedProfile.TryGet<ChromaticAberration>(out ChromaticAberration CA))
+        if (_volume.sharedProfile.TryGet(out ChromaticAberration chromaticAberration))
         {
-            _chromaticAberration = CA;
+            _chromaticAberration = chromaticAberration;
         }
-         
+        _revertableChecker = GetComponentInChildren<RevertableChecker>();
     }
 
     private void FixedUpdate()
@@ -72,16 +73,23 @@ public class Reverter : MonoBehaviour
         }
     }
 
-    public void Revert(bool started)
+    public void Revert()
     {
-        if (started)
+        //if (started)
+        //{
+        //    _isReverting = true;
+        //}
+        //else
+        //{
+        //    _isReverting = false;
+        //}
+
+        RevertableBase revertable = _revertableChecker.GetFirstRevertableInAim();
+        if (revertable != null)
         {
-            _isReverting = true;
+            revertable.RevertObject();
         }
-        else
-        {
-            _isReverting = false;
-        }
+        
     }
 
     public void TemporalMode(InputAction.CallbackContext context)
@@ -104,7 +112,7 @@ public class Reverter : MonoBehaviour
     {
         _overlayCamera.SetActive(true);
         if (_temporalTransition != null) StopCoroutine(_temporalTransition);
-        _temporalTransition = StartCoroutine(LerpTemporalEffects(true, MaxChromaticAberration, MinDesaturationStrength));
+        _temporalTransition = StartCoroutine(LerpTemporalEffects(true, MAX_CHROMATIC_ABERRATION, MIN_DESATURATION_STRENGTH));
         OnEnterTemporalMode?.Invoke();
     }
 
@@ -123,7 +131,7 @@ public class Reverter : MonoBehaviour
         float t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime / TemporalTransitionDuration;
+            t += Time.deltaTime / TEMPORAL_TRANSITION_DURATION;
             float smoothT = Mathf.SmoothStep(0f, 1f, t);
 
             _chromaticAberration.intensity.value = Mathf.Lerp(startCA, targetCA, smoothT);

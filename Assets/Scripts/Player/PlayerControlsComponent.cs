@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-//TODO not only movement so or split up or rename
 public class PlayerControlsComponent : MonoBehaviour
 {
     [SerializeField] private float _speed = 1f;
@@ -56,18 +55,9 @@ public class PlayerControlsComponent : MonoBehaviour
 
     public void Shoot(InputAction.CallbackContext context)
     {
-        if (_reverter.InTemporalMode)
+        if (_reverter.InTemporalMode && context.started)
         {
-            
-            if (context.started)
-            {
-                OnReverterShoot(true);
-            }
-
-            else if (context.canceled)
-            {
-                OnReverterShoot(false);
-            }
+            _reverter.Revert();
         }
         else
         {
@@ -95,11 +85,6 @@ public class PlayerControlsComponent : MonoBehaviour
             _currentWeapon.StopShooting();
         }
 
-    }
-
-    private void OnReverterShoot(bool started)
-    {
-        _reverter.Revert(started);
     }
 
     public void Reload(InputAction.CallbackContext context)

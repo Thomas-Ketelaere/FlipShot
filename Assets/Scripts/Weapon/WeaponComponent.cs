@@ -20,11 +20,14 @@ public class WeaponComponent : MonoBehaviour
     [SerializeField] private float _checkAmountBulletsTime = 2f;
     [SerializeField] private int _maxBullets = 30;
     [SerializeField] private float _bulletExtraDirUp = 0.1f;
+    [SerializeField] private GameObject _bloodVFXObj;
+
     Vector3 _normalWeaponPos;
     Vector3 _normalWeaponRot;
     Vector3 _normalMagPos;
     Vector3 _normalBoltPos;
-    private const float TimeToZoom = 0.04f;
+    private const float TIME_TO_ZOOM = 0.04f;
+    private const float DISTANCE_WALL_BLOOD = 3f;
     private float _accumulatedTime;
     private bool _isReloading;
     private bool _shouldShoot;
@@ -53,12 +56,12 @@ public class WeaponComponent : MonoBehaviour
 
     public void ZoomIn()
     {
-        StartCoroutine(MoveToPos(transform, _zoomWeaponPos, TimeToZoom));
+        StartCoroutine(MoveToPos(transform, _zoomWeaponPos, TIME_TO_ZOOM));
     }
 
     public void ZoomOut()
     {
-        StartCoroutine(MoveToPos(transform, _normalWeaponPos, TimeToZoom));
+        StartCoroutine(MoveToPos(transform, _normalWeaponPos, TIME_TO_ZOOM));
     }
 
     private IEnumerator MoveToPos(Transform objectToMove, Vector3 targetPos, float inTime)
@@ -140,26 +143,27 @@ public class WeaponComponent : MonoBehaviour
             {
                 Debug.Log("Player/Enemy hit");
                 //get health comp and do damage
-                //GameObject bloodVFXObject = Instantiate(_bloodVFXObj);
-                //bloodVFXObject.transform.position = hit.point;
-                //bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal);
-                //RaycastHit wallHit;
-                //if (Physics.Raycast(hit.point, transform.forward, out wallHit, DistanceWallForBlood, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player
-                //{
-                //    GameObject bloodObject = BulletsManager.Instance.RequestBloodWallObject();
-                //    if (bloodObject != null)
-                //    {
-                //        bloodObject.transform.position = wallHit.point + wallHit.normal * 0.01f;
-                //        Quaternion lookRot = Quaternion.LookRotation(-wallHit.normal);
-                //        lookRot *= Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward);
-                //        bloodObject.transform.rotation = lookRot;
-                //    }
-                //}
+                GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
+                bloodVFXObject.transform.position = hit.point;
+                bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal);
+                RaycastHit wallHit;
+                if (Physics.Raycast(hit.point, transform.forward, out wallHit, DISTANCE_WALL_BLOOD, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player
+                {
+                    Debug.Log("Hit wall");
+                    GameObject bloodObject = ObjectPool.Instance.RequestBloodWallObject();
+                    if (bloodObject != null)
+                    {
+                        bloodObject.transform.position = wallHit.point + wallHit.normal * 0.01f;
+                        Quaternion lookRot = Quaternion.LookRotation(-wallHit.normal);
+                        lookRot *= Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward);
+                        bloodObject.transform.rotation = lookRot;
+                    }
+                }
             }
 
             else if (hit.collider.gameObject.CompareTag("Object"))
             {
-                GameObject bulletHoleObj = BulletsManager.Instance.RequestBulletHoleObject();
+                GameObject bulletHoleObj = ObjectPool.Instance.RequestBulletHoleObject();
                 if (bulletHoleObj != null)
                 {
                     bulletHoleObj.transform.position = hit.point + hit.normal * 0.01f;
@@ -192,9 +196,25 @@ public class WeaponComponent : MonoBehaviour
         _recoilComponent.AddRecoil();
     }
 
+    public void RevertShoot(Vector3 origin)
+    {
+        RaycastHit hit;
+        if(Physics.Linecast(origin, _barrelPos.position, out hit, LayerMask.GetMask("Hittable", "Damageable")))
+        {
+            if (hit.collider.gameObject.CompareTag("Player") || hit.collider.gameObject.CompareTag("Enemy"))
+            {
+                Debug.Log("Player/Enemy hit");
+                //get health comp and do damage
+                GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
+                bloodVFXObject.transform.position = hit.point;
+                bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal); //optimally should also show blood in front of character, since bullet goes through
+            }
+        }
+    }
+
     private void SpawnBulletShell()
     {
-        GameObject bulletShell = BulletsManager.Instance.RequestBulletShellObject();
+        GameObject bulletShell = ObjectPool.Instance.RequestBulletShellObject();
         bulletShell.transform.position = _ejectionPoint.position;
         bulletShell.transform.rotation = _ejectionPoint.rotation;
 
@@ -288,7 +308,7 @@ public class WeaponComponent : MonoBehaviour
     //    StartCoroutine(MoveToPos(_magazine.transform, _normalMagPos, _reloadTime / 2));
     //}
 
-    public void EndReloading()
+    public void EndReloading() //dont remove, gets used in animation event
     {
         _currentAmountBullets += _maxBullets; //in real weapons there can still be a round in the barrel
         Debug.Log("Reloaded gun");

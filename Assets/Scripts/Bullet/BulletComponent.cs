@@ -30,7 +30,7 @@ public class BulletComponent : MonoBehaviour
                 RaycastHit wallHit;
                 if (Physics.Raycast(hit.point, transform.forward, out wallHit, DistanceWallForBlood, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player
                 {
-                    GameObject bloodObject = BulletsManager.Instance.RequestBloodWallObject();
+                    GameObject bloodObject = ObjectPool.Instance.RequestBloodWallObject();
                     if (bloodObject != null)
                     {
                         bloodObject.transform.position = wallHit.point + wallHit.normal * 0.01f;
@@ -43,7 +43,7 @@ public class BulletComponent : MonoBehaviour
 
             else if(hit.collider.gameObject.CompareTag("Object"))
             {
-                GameObject bulletHoleObj = BulletsManager.Instance.RequestBulletHoleObject();
+                GameObject bulletHoleObj = ObjectPool.Instance.RequestBulletHoleObject();
                 if (bulletHoleObj != null)
                 {
                     bulletHoleObj.transform.position = hit.point + hit.normal * 0.01f;
