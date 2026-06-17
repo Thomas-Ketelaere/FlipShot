@@ -952,6 +952,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 295385312737873626, guid: a307afc2806d57e488d64a9289dc8e21, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8620634120711329895, guid: a307afc2806d57e488d64a9289dc8e21, type: 3}
       propertyPath: m_Name
       value: InvertedGrenade

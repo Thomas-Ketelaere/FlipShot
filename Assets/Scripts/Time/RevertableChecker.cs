@@ -31,6 +31,11 @@ public class RevertableChecker : MonoBehaviour
         for (int i = 0; i < _revertablesInView.Count; i++)
         {
             RevertableBase revertable = _revertablesInView[i];
+            if(revertable == null) //when revertable gets destroyed but still in view
+            {
+                _revertablesInView.Remove(revertable);
+                continue;
+            }
             Vector3 directionToRevertable = (revertable.transform.position - _camera.transform.position).normalized;
             float angle = Vector3.Angle(_camera.transform.forward, directionToRevertable);
             bool isAimedAt = angle <= MAX_DELTA_ANGLE_REVERTABLE;

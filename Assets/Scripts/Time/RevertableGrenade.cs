@@ -16,6 +16,9 @@ public class RevertableGrenade : RevertableBase
     private Transform _playerTransform;
     private Transform _cameraTransform;
 
+    private MeshCollider _grenadeMeshCollider;
+    private Rigidbody _rb;
+
     private void Awake()
     {
         //_grenadeVisualMesh.enabled = false; //doing it here so it's still visible when making the levels
@@ -32,6 +35,8 @@ public class RevertableGrenade : RevertableBase
         {
             _playerTransform = player.transform;
         }
+        _rb = GetComponent<Rigidbody>();
+        _grenadeMeshCollider = _grenadeVisualMesh.GetComponent<MeshCollider>();
     }
 
     public override void RevertObject()
@@ -48,13 +53,8 @@ public class RevertableGrenade : RevertableBase
 
     public void RollToPlayer()
     {
-        //after "implosion" happened, should roll to player since they "threw" it
         _grenadeVisualMesh.enabled = true;
-        //should make lever also visible again
-        
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null) 
-            rb.isKinematic = true;
+        _rb.isKinematic = true;
 
         StartCoroutine(ExecuteReverseMovement());
     }
@@ -98,7 +98,7 @@ public class RevertableGrenade : RevertableBase
         _safetyLever.gameObject.SetActive(true);
         Vector3 leverStartLocalPos = _safetyLever.localPosition;
         Quaternion leverStartLocalRot = _safetyLever.localRotation;
-
+        _grenadeMeshCollider.enabled = false;
         while (airElapsed < airDuration)
         {
             airElapsed += Time.deltaTime;

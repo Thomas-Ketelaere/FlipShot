@@ -10,7 +10,7 @@ public abstract class RevertableBase : MonoBehaviour
     public abstract void RevertObject();
     private LineRenderer _lineRenderer;
     private Transform _lineRendererTargetTransform;
-    private PlayerControlsComponent _playerControlsComponent;
+    protected PlayerControlsComponent _playerControlsComponent;
     private bool _isAimedAt = false;
 
     public bool IsAimedAt => _isAimedAt;

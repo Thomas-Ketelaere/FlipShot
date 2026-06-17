@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class RevertableBulletHole : RevertableBase
 {
-    private PlayerControlsComponent _playerMovementComponent;
     private BulletParticleSysComponent _bulletParticleSysComponent;
 
     protected override void Start()
     {
         base.Start();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        _playerMovementComponent = player.GetComponent<PlayerControlsComponent>();
+        _playerControlsComponent = player.GetComponent<PlayerControlsComponent>();
         _bulletParticleSysComponent = GetComponent<BulletParticleSysComponent>();
     }
 
@@ -18,12 +17,12 @@ public class RevertableBulletHole : RevertableBase
     {
         if (!_isActive) return;
         
-        //todo check if reverting is possible (is magazine full)
+        //todo check if reverting is possible (is magazine full) and if wall is inbetween (should be in revertableChecker)
         GameObject bulletShell = ObjectPool.Instance.RequestBulletShellObject();
-        Transform ejectionTransform = _playerMovementComponent.GetPlayerWeapon().GetEjectionPoint();
+        Transform ejectionTransform = _playerControlsComponent.GetPlayerWeapon().GetEjectionPoint();
 
-        Vector3 playerPos = _playerMovementComponent.transform.position;
-        Vector3 rightOffset = _playerMovementComponent.transform.right * 0.75f; // Adjust 0.75f for how far right you want it
+        Vector3 playerPos = _playerControlsComponent.transform.position;
+        Vector3 rightOffset = _playerControlsComponent.transform.right * 0.75f; // Adjust 0.75f for how far right you want it
         Vector3 targetFloorPos = playerPos + rightOffset;
         targetFloorPos.y = 0.1f; //todo check if this is above ground or not
 
@@ -75,8 +74,8 @@ public class RevertableBulletHole : RevertableBase
 
             yield return null;
         }
-        _playerMovementComponent.GetPlayerWeapon().RevertShoot(transform.position);
-        _playerMovementComponent.GetPlayerWeapon().AddBullet();
+        _playerControlsComponent.GetPlayerWeapon().RevertShoot(transform.position);
+        _playerControlsComponent.GetPlayerWeapon().AddBullet();
 
         SingleObject bulletShell = shell.GetComponent<SingleObject>();
         bulletShell.SetInactive();
