@@ -30430,15 +30430,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277657052461021268, guid: b1c5654485cbe15488a39c7e1e79f054, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 277657052461021268, guid: b1c5654485cbe15488a39c7e1e79f054, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 277657052461021268, guid: b1c5654485cbe15488a39c7e1e79f054, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 277657052461021268, guid: b1c5654485cbe15488a39c7e1e79f054, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -30564,8 +30564,8 @@ MonoBehaviour:
   _amountBulletsText: {fileID: 2670541227407418346}
   _magazine: {fileID: 7896202352706495970}
   _muzzleFlash: {fileID: 3015298326267075618}
-  _magazineCheckPos: {x: 0, y: 0, z: 0}
-  _magazineCheckRot: {x: 0, y: 0, z: 0}
+  _magazineCheckPos: {x: 0.12, y: -0.07, z: 0.18}
+  _magazineCheckRot: {x: 0, y: 333.17, z: 347.94}
   _zoomFOV: 50
   _damageWeapon: 30
   _speedBullet: 1
