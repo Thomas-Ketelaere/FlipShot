@@ -189,8 +189,6 @@ public class WeaponComponent : MonoBehaviour
         //    StartCoroutine(MoveToPos(transform, transform.localPosition + new Vector3(0, 0, -0.05f), _fireRate / 3));
         //    Invoke("StartResetBolt", _fireRate / 3);
         //}
-
-
         
         SetAmountBulletsText();
         _recoilComponent.AddRecoil();
@@ -201,15 +199,25 @@ public class WeaponComponent : MonoBehaviour
         RaycastHit hit;
         if(Physics.Linecast(origin, _barrelPos.position, out hit, LayerMask.GetMask("Hittable", "Damageable")))
         {
-            if (hit.collider.gameObject.CompareTag("Player") || hit.collider.gameObject.CompareTag("Enemy"))
+            if (hit.collider.gameObject.CompareTag("Enemy"))
             {
-                Debug.Log("Player/Enemy hit");
+                Debug.Log("Enemy hit");
                 //get health comp and do damage
                 GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
                 bloodVFXObject.transform.position = hit.point;
                 bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal); //optimally should also show blood in front of character, since bullet goes through
             }
         }
+        if (_currentAmountBullets == 0)
+        {
+            _gunAnimator.Play("FireWeaponReverseFromEmpty");
+        }
+        else
+        {
+            _gunAnimator.Play("FireWeaponReverse");
+        }
+            
+        AddBullet();
     }
 
     private void SpawnBulletShell()
@@ -248,7 +256,6 @@ public class WeaponComponent : MonoBehaviour
 
         if (_currentAmountBullets < _maxBullets)
         {
-            //TODO add check here if already reloading
             _isReloading = true;
             if (_currentAmountBullets > 0) //in real weapons there can still be a round in the barrel
             {
@@ -261,21 +268,6 @@ public class WeaponComponent : MonoBehaviour
                 _gunAnimator.Play("ReloadWeaponFromEmpty");
                 //_gunAnimator.SetBool("IsEmpty", true);
             }
-            
-            //if(!IsInvoking("Reload"))
-            //{
-            //    if(_currentAmountBullets > 0) //in real weapons there can still be a round in the barrel
-            //    {
-            //        _currentAmountBullets = 1;
-            //    }
-            //    else
-            //    {
-            //        _currentAmountBullets = 0;
-            //    }
-            //    Invoke("Reload", _reloadTime);
-            //    StartCoroutine(MoveToPos(_magazine.transform, _magazine.transform.localPosition + new Vector3(0, -0.5f, 0), _reloadTime / 2));
-            //    Invoke("MoveMagUpReload", _reloadTime / 2);
-            //}
         }
     }
 

@@ -75,7 +75,6 @@ public class RevertableBulletHole : RevertableBase
             yield return null;
         }
         _playerControlsComponent.GetPlayerWeapon().RevertShoot(transform.position);
-        _playerControlsComponent.GetPlayerWeapon().AddBullet();
 
         SingleObject bulletShell = shell.GetComponent<SingleObject>();
         bulletShell.SetInactive();
