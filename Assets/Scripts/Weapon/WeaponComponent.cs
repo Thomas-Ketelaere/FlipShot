@@ -211,11 +211,22 @@ public class WeaponComponent : MonoBehaviour
         {
             if (hit.collider.gameObject.CompareTag("Enemy"))
             {
+
                 Debug.Log("Enemy hit");
+                InjuryPart injuryPart = hit.collider.GetComponent<InjuryPart>();
+                if (injuryPart != null)
+                {
+                    Vector3 direction = _barrelPos.position - origin;
+                    injuryPart.BodyPartHit(direction, hit.point);
+                }
+                else
+                {
+                    Debug.LogWarning("[WeaponController] Player/Enemy hit but doesnt have InjuryPart");
+                }
                 //get health comp and do damage
-                GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
-                bloodVFXObject.transform.position = hit.point;
-                bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal); //optimally should also show blood in front of character, since bullet goes through
+                //GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
+                //bloodVFXObject.transform.position = hit.point;
+                //bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal); //optimally should also show blood in front of character, since bullet goes through
             }
         }
         if (_currentAmountBullets == 0)

@@ -280,8 +280,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31629dfb702d70b40a4fc6082adcfe3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 1
-  _startHealth: 1
+  _maxHealth: 2
+  _startHealth: 2
   _ragdollRigidbodies:
   - {fileID: 1444989635097765575}
   - {fileID: 8772533425056441541}
@@ -294,18 +294,6 @@ MonoBehaviour:
   - {fileID: 4086698312701702912}
   - {fileID: 893302057563232847}
   - {fileID: 6581730303670469712}
-  _ragdollColliders:
-  - {fileID: 66543920692739404}
-  - {fileID: 3736522327347277864}
-  - {fileID: 8618424102010848756}
-  - {fileID: 1579815800703847034}
-  - {fileID: 8160810352176428444}
-  - {fileID: 9060640517904986955}
-  - {fileID: 6301574463187923533}
-  - {fileID: 7838065409856430647}
-  - {fileID: 1631678125782567155}
-  - {fileID: 3520732540593672063}
-  - {fileID: 130281534342874313}
 --- !u!1 &9005434455650334336
 GameObject:
   m_ObjectHideFlags: 0

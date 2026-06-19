@@ -6,18 +6,23 @@ public class EnemyHealthComponent : HealthComponent
 {
     [Header("Ragdoll")]
     [SerializeField] private Rigidbody[] _ragdollRigidbodies;
-    [SerializeField] private Collider[] _ragdollColliders;
 
     private Animator _animator;
     private NavMeshAgent _agent;
 
     private const float RAGDOLL_HIT_STRENGTH = 50f;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         _animator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
         SetRagdollActive(false);
+    }
+
+    private void Update()
+    {
+        //_animator.SetTrigger("Damage02");
     }
 
 
@@ -26,10 +31,6 @@ public class EnemyHealthComponent : HealthComponent
     {
         _ragdollRigidbodies = GetComponentsInChildren<Rigidbody>()
             .Where(rb => rb.gameObject != gameObject)
-            .ToArray();
-
-        _ragdollColliders = GetComponentsInChildren<Collider>()
-            .Where(col => col.gameObject != gameObject)
             .ToArray();
     }
 
@@ -68,6 +69,14 @@ public class EnemyHealthComponent : HealthComponent
 
     protected override void Die(Vector3 direction, Vector3 hitPoint)
     {
+        base.Die(direction, hitPoint);
         EnableRagdollWithForce(direction * RAGDOLL_HIT_STRENGTH, hitPoint);
+    }
+
+    public override void GetHit(Vector3 direction, Vector3 hitPoint)
+    {
+        Debug.Log("Enemy hit animation");
+        _animator.SetTrigger("Damage02"); //TODO no magic value and should play random damage animation
+        base.GetHit(direction, hitPoint);
     }
 }

@@ -2,12 +2,13 @@ using UnityEngine;
 
 public abstract class HealthComponent : MonoBehaviour
 {
-    [SerializeField] private uint _maxHealth = 1;
-    [SerializeField] private uint _startHealth = 1; 
+    [SerializeField] private uint _maxHealth = 2;
+    [SerializeField] private uint _startHealth = 2; 
 
     private uint _currentHealth;
+    private bool _isDead = false;
 
-    void Start()
+    protected virtual void Start()
     {
         if(_maxHealth == 0)
         {
@@ -29,11 +30,13 @@ public abstract class HealthComponent : MonoBehaviour
 
     public void InstantKill(Vector3 direction, Vector3 hitPoint)
     {
+        if (_isDead) return;
         Die(direction, hitPoint);
     }
 
-    public void GetHit(Vector3 direction, Vector3 hitPoint)
+    public virtual void GetHit(Vector3 direction, Vector3 hitPoint)
     {
+        if (_isDead) return;
         --_currentHealth;
         if (_currentHealth == 0)
         {
@@ -41,5 +44,8 @@ public abstract class HealthComponent : MonoBehaviour
         }
     }
 
-    protected abstract void Die(Vector3 direction, Vector3 hitPoint); //todo send hit direction for ragdoll 
+    protected virtual void Die(Vector3 direction, Vector3 hitPoint)
+    {
+        _isDead = true;
+    }
 }
