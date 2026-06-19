@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerControlsComponent : MonoBehaviour
 {
     [SerializeField] private float _speed = 1f;
+    [SerializeField] private float _throwableThrowStrength = 5f;
     private Rigidbody _rigidBody;
     private Vector2 _inputMoveDirection;
 
@@ -11,6 +12,9 @@ public class PlayerControlsComponent : MonoBehaviour
     private CameraComponent _cameraComp;
     private Transform _cameraTransform;
     private Reverter _reverter;
+
+    //ALL TEMP STUFF HERE
+    [SerializeField] private GameObject _grenadePrefab; //will change when inventory system
 
     void Start()
     {
@@ -108,6 +112,19 @@ public class PlayerControlsComponent : MonoBehaviour
         if (context.started)
         {
             _currentWeapon.StartCheckingAmountBullets();
+        }
+    }
+
+    public void ThrowThrowable(InputAction.CallbackContext context)
+    {
+        if(context.started)
+        {
+            GameObject grenade = Instantiate(_grenadePrefab); //todo should get from inventory or elsewhere, should not be created in playerControls
+            //grenade.transform.position = transform.position + new Vector3(0f, 0.6f, 0.6f);
+            grenade.transform.position = Camera.main.transform.position + Camera.main.transform.forward;
+            Rigidbody rb = grenade.GetComponent<Rigidbody>();
+            Vector3 direction = Camera.main.transform.forward;
+            rb.AddForce(_throwableThrowStrength * direction, ForceMode.Impulse);
         }
     }
 

@@ -204,6 +204,10 @@ PrefabInstance:
       propertyPath: 'm_VertexStreams.Array.data[6]'
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301002, guid: 017c9fcd02ca72049806a4014da0bea6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7522982782318301003, guid: 017c9fcd02ca72049806a4014da0bea6, type: 3}
       propertyPath: lengthInSec
       value: 1
@@ -359,6 +363,10 @@ PrefabInstance:
     - target: {fileID: 4193309508148691570, guid: 4613481ed95623b4ca81c27b9adaa018, type: 3}
       propertyPath: m_Name
       value: Particle Shockwave 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4193309508148691570, guid: 4613481ed95623b4ca81c27b9adaa018, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6873444655151215164, guid: 4613481ed95623b4ca81c27b9adaa018, type: 3}
       propertyPath: m_LocalPosition.x

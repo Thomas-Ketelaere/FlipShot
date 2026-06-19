@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,24 +6,29 @@ public class Grenade : MonoBehaviour
     [SerializeField] private float _farBlastRadius = 4f; //only gets hit
     [SerializeField] private float _closeBlastRadius = 2f; //gets insta killed
     [SerializeField] private float _blastForce = 100f;
+    [SerializeField] private ParticleSystem _explosionParticle;
+    [SerializeField] private MeshRenderer _grenadeMesh;
+
+    private const float FUSE_TIME = 5f;
 
     private int _layerMask;
+    private const float EXPLOSION_TIME = 1f;
 
     private void Start()
     {
         _layerMask = LayerMask.GetMask("Damageable"); //pref here also env damage (stretch goal)
+        //should grenade trigger/move other grenade
+        Invoke("Explode", FUSE_TIME); 
 
-        //TEMP
-        Invoke("Explode", 3f);
+        //todo animation pin
+        //todo lever going away
     }
 
     public void Explode()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, _farBlastRadius, _layerMask);
 
-        // Deduplicate: multiple parts hit on the same character should only affect that character once
-        // Key = the EnemyHealth root, Value = the closest hit point for force direction
-        Dictionary<HealthComponent, Vector3> uniqueCharacters = new();
+        Dictionary<HealthComponent, Vector3> uniqueCharacters = new(); //only save one health per object part
 
         foreach (Collider collider in colliders)
         {
@@ -37,9 +41,11 @@ public class Grenade : MonoBehaviour
 
             HealthComponent health = part.Health;
 
-            // Only register each character once, keep the hit point of the first/closest part
             if (!uniqueCharacters.ContainsKey(health))
+            {
                 uniqueCharacters.Add(health, collider.ClosestPoint(transform.position));
+            }
+                
         }
 
         foreach (var (health, hitPoint) in uniqueCharacters)
@@ -47,7 +53,6 @@ public class Grenade : MonoBehaviour
             float distance = Vector3.Distance(health.transform.position, transform.position);
             bool isClose = distance <= _closeBlastRadius;
 
-            // Direction from grenade to character, used for blast force
             Vector3 blastDirection = (health.transform.position - transform.position).normalized;
 
             if (isClose)
@@ -60,7 +65,9 @@ public class Grenade : MonoBehaviour
             }
         }
 
-        Destroy(gameObject);
+        _explosionParticle.Play();
+        _grenadeMesh.enabled = false;
+        Invoke("DestroyGrenade", EXPLOSION_TIME);
     }
 
     private void OnDrawGizmosSelected()
@@ -70,6 +77,11 @@ public class Grenade : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _closeBlastRadius);
+    }
+
+    private void DestroyGrenade()
+    {
+        Destroy(gameObject);
     }
 
 }
