@@ -20,21 +20,21 @@ public class InjuryPart : MonoBehaviour //todo better name
         _health = GetComponentInParent<HealthComponent>();
     }
 
-    public void BodyPartHit(Vector3 direction, Vector3 hitPoint) //send location and direction for blood vfx and ragdoll later
+    public void BodyPartHit(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal) //send location and direction for blood vfx and ragdoll later
     {
         switch (_part)
         {
             case InjuryBodyPart.Head:
-                _health.InstantKill(direction, hitPoint);
+                _health.InstantKill(direction, hitPoint, hitPointNormal);
                 break;
             case InjuryBodyPart.Torso:
-                _health.InstantKill(direction, hitPoint);
+                _health.InstantKill(direction, hitPoint, hitPointNormal);
                 break;
             case InjuryBodyPart.Leg:
-                _health.GetHit(direction, hitPoint);
+                _health.GetHit(direction, hitPoint, hitPointNormal);
                 break;
             case InjuryBodyPart.Arm:
-                _health.GetHit(direction, hitPoint);
+                _health.GetHit(direction, hitPoint, hitPointNormal);
                 break;
         }
 

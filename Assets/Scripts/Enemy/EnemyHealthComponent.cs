@@ -11,6 +11,7 @@ public class EnemyHealthComponent : HealthComponent
     private NavMeshAgent _agent;
 
     private const float RAGDOLL_HIT_STRENGTH = 50f;
+    private const string ANIMATION_DAMAGE_NAME = "Damage02";
 
     protected override void Start()
     {
@@ -18,11 +19,6 @@ public class EnemyHealthComponent : HealthComponent
         _animator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
         SetRagdollActive(false);
-    }
-
-    private void Update()
-    {
-        //_animator.SetTrigger("Damage02");
     }
 
 
@@ -49,11 +45,6 @@ public class EnemyHealthComponent : HealthComponent
             rb.isKinematic = !active;
         }
 
-        //going to use colliders for injury system
-        //foreach (var col in _ragdollColliders)
-        //{
-        //    col.enabled = active;
-        //}
     }
 
     public void EnableRagdollWithForce(Vector3 force, Vector3 hitPoint)
@@ -67,16 +58,15 @@ public class EnemyHealthComponent : HealthComponent
         closestBone.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
     }
 
-    protected override void Die(Vector3 direction, Vector3 hitPoint)
+    protected override void Die(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal)
     {
-        base.Die(direction, hitPoint);
+        base.Die(direction, hitPoint, hitPointNormal);
         EnableRagdollWithForce(direction * RAGDOLL_HIT_STRENGTH, hitPoint);
     }
 
-    public override void GetHit(Vector3 direction, Vector3 hitPoint)
+    public override void GetHit(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal)
     {
-        Debug.Log("Enemy hit animation");
-        _animator.SetTrigger("Damage02"); //TODO no magic value and should play random damage animation
-        base.GetHit(direction, hitPoint);
+        _animator.SetTrigger(ANIMATION_DAMAGE_NAME);
+        base.GetHit(direction, hitPoint, hitPointNormal);
     }
 }

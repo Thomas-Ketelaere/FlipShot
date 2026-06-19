@@ -5,21 +5,36 @@ public class ObjectPool : MonoBehaviour
 {
     public static ObjectPool Instance { get; private set; }
 
+    [Header("Bullets")]
     [SerializeField] private int _maxBullets;
-    [SerializeField] private int _maxBulletHoles;
     [SerializeField] private GameObject _bulletPrefab;
-    [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private GameObject _bulletShellPrefab;
-    [SerializeField] private int _maxBloodWalls;
+    [SerializeField] private int _maxBulletHoles;
+    [SerializeField] private GameObject _bulletHolePrefab;
+
+    [Header("Blood")]
     [SerializeField] private List<GameObject> _bloodWallPrefabs = new List<GameObject>();
-    private GameObject[] _bullets;
+    [SerializeField] private int _maxBloodWalls;
+    [SerializeField] private GameObject _bloodVFXPrefab;
+    [SerializeField] private int _maxBloodVFX;
+
+
+    private SingleObject[] _bullets;
     private float[] _bulletsActiveTime;
-    private GameObject[] _bulletHolesObject;
+    private SingleObject[] _bulletHolesObject;
     private float[] _bulletHolesActiveTime;
-    private GameObject[] _bulletShellsObject;
+    private SingleObject[] _bulletShellsObject;
     private float[] _bulletShellsActiveTime;
-    private GameObject[] _bloodWalls;
+    private SingleObject[] _bloodWalls;
     private float[] _bloodWallsActiveTime;
+    private SingleObject[] _bloodVFXs;
+    private float[] _bloodVFXsActiveTime;
+
+    private const string BULLETS_OBJECT_NAME = "Bullets";
+    private const string BULLET_SHELLS_OBJECT_NAME = "Bullet Shells";
+    private const string BULLET_HOLES_OBJECT_NAME = "Bullet Holes";
+    private const string BLOOD_WALL_OBJECT_NAME = "Wall Blood Objects";
+    private const string BLOOD_VFX_OBJECT_NAME = "Blood VFXs";
 
     private void Awake()
     {
@@ -33,41 +48,59 @@ public class ObjectPool : MonoBehaviour
         }
 
         //Bullets
-        _bullets = new GameObject[_maxBullets]; //memory pool
-        _bulletsActiveTime = new float[_maxBullets];
-        for (int i = 0; i < _maxBullets; i++)
-        {
-            _bullets[i] = Instantiate(_bulletPrefab);
-            _bullets[i].SetActive(false);
-        }
+        //GameObject bulletsParent = new GameObject(BULLETS_OBJECT_NAME);
+        //bulletsParent.transform.parent = this.transform;
+        //_bullets = new SingleObject[_maxBullets];
+        //_bulletsActiveTime = new float[_maxBullets];
+        //for (int i = 0; i < _maxBullets; i++)
+        //{
+        //    _bullets[i] = Instantiate(_bulletPrefab, bulletsParent.transform).GetComponent<SingleObject>();
+        //    _bullets[i].gameObject.SetActive(false);
+        //}
 
         //BulletHoles
-        _bulletHolesObject = new GameObject[_maxBulletHoles];
+        GameObject bulletHolesParent = new GameObject(BULLET_HOLES_OBJECT_NAME);
+        bulletHolesParent.transform.parent = this.transform;
+        _bulletHolesObject = new SingleObject[_maxBulletHoles];
         _bulletHolesActiveTime = new float[_maxBulletHoles];
         for (int i = 0; i < _maxBulletHoles; i++)
         {
-            _bulletHolesObject[i] = Instantiate(_bulletHolePrefab);
-            _bulletHolesObject[i].SetActive(false);
+            _bulletHolesObject[i] = Instantiate(_bulletHolePrefab, bulletHolesParent.transform).GetComponent<SingleObject>();
+            _bulletHolesObject[i].gameObject.SetActive(false);
         }
 
         //bulletShells
-        _bulletShellsObject = new GameObject[_maxBullets]; 
+        GameObject bulletShellsParent = new GameObject(BULLET_SHELLS_OBJECT_NAME);
+        bulletShellsParent.transform.parent = this.transform;
+        _bulletShellsObject = new SingleObject[_maxBullets];
         _bulletShellsActiveTime = new float[_maxBullets];
         for (int i = 0; i < _maxBullets; i++)
         {
-            _bulletShellsObject[i] = Instantiate(_bulletShellPrefab);
-            _bulletShellsObject[i].SetActive(false);
+            _bulletShellsObject[i] = Instantiate(_bulletShellPrefab, bulletShellsParent.transform).GetComponent<SingleObject>();
+            _bulletShellsObject[i].gameObject.SetActive(false);
         }
 
         // blood on walls
-        _bloodWalls = new GameObject[_maxBloodWalls];
+        GameObject bloodWallsParent = new GameObject(BLOOD_WALL_OBJECT_NAME);
+        bloodWallsParent.transform.parent = this.transform;
+        _bloodWalls = new SingleObject[_maxBloodWalls];
         _bloodWallsActiveTime = new float[_maxBloodWalls];
-
         for (int i = 0; i < _maxBloodWalls; i++)
         {
             GameObject randomPrefab = _bloodWallPrefabs[Random.Range(0, _bloodWallPrefabs.Count)];
-            _bloodWalls[i] = Instantiate(randomPrefab);
-            _bloodWalls[i].SetActive(false);
+            _bloodWalls[i] = Instantiate(randomPrefab, bloodWallsParent.transform).GetComponent<SingleObject>();
+            _bloodWalls[i].gameObject.SetActive(false);
+        }
+
+        // blood VFX
+        GameObject bloodVFXParent = new GameObject(BLOOD_VFX_OBJECT_NAME);
+        bloodVFXParent.transform.parent = this.transform;
+        _bloodVFXs = new SingleObject[_maxBloodVFX];
+        _bloodVFXsActiveTime = new float[_maxBloodVFX];
+        for (int i = 0; i < _maxBloodVFX; i++)
+        {
+            _bloodVFXs[i] = Instantiate(_bloodVFXPrefab, bloodVFXParent.transform).GetComponent<SingleObject>();
+            _bloodVFXs[i].gameObject.SetActive(false);
         }
     }
 
@@ -78,14 +111,14 @@ public class ObjectPool : MonoBehaviour
 
         for (int i = 0; i < _bullets.Length; i++)
         {
-            if (!_bullets[i].activeSelf)
+            if (!_bullets[i].gameObject.activeSelf)
             {
                 _bullets[i].gameObject.SetActive(true);
+                _bullets[i].SetActive();
                 _bulletsActiveTime[i] = Time.time;
-                return _bullets[i];
+                return _bullets[i].gameObject;
             }
-
-            else //object is active (for when memory pool is all active)
+            else
             {
                 if (_bulletsActiveTime[i] < oldestTime)
                 {
@@ -95,13 +128,13 @@ public class ObjectPool : MonoBehaviour
             }
         }
 
-        Debug.Log("No Bullets left in Memory Pool");
-        Debug.Log("Getting Oldest One");
+        Debug.Log("No Bullets left in Memory Pool. Getting Oldest One.");
 
-        _bullets[oldestIndex].GetComponent<BulletComponent>().SetBulletInactive();
+        _bullets[oldestIndex].SetInactive();
         _bullets[oldestIndex].gameObject.SetActive(true);
+        _bullets[oldestIndex].SetActive();
         _bulletsActiveTime[oldestIndex] = Time.time;
-        return _bullets[oldestIndex]; 
+        return _bullets[oldestIndex].gameObject;
     }
 
     public GameObject RequestBulletHoleObject()
@@ -111,14 +144,14 @@ public class ObjectPool : MonoBehaviour
 
         for (int i = 0; i < _bulletHolesObject.Length; i++)
         {
-            if (!_bulletHolesObject[i].activeSelf)
+            if (!_bulletHolesObject[i].gameObject.activeSelf)
             {
                 _bulletHolesObject[i].gameObject.SetActive(true);
-                _bulletHolesObject[i].GetComponent<BulletParticleSysComponent>().SetActive();
+                _bulletHolesObject[i].SetActive();
                 _bulletHolesActiveTime[i] = Time.time;
-                return _bulletHolesObject[i];
+                return _bulletHolesObject[i].gameObject;
             }
-            else //object is active (for when memory pool is all active)
+            else
             {
                 if (_bulletHolesActiveTime[i] < oldestTime)
                 {
@@ -128,15 +161,13 @@ public class ObjectPool : MonoBehaviour
             }
         }
 
-        Debug.Log("No BulletHoles left in Memory Pool");
-        Debug.Log("Getting Oldest One");
+        Debug.Log("No BulletHoles left in Memory Pool. Getting Oldest One.");
 
-        BulletParticleSysComponent bulletHoleComponent = _bulletHolesObject[oldestIndex].GetComponent<BulletParticleSysComponent>();
-        bulletHoleComponent.SetInactive();
+        _bulletHolesObject[oldestIndex].SetInactive();
         _bulletHolesObject[oldestIndex].gameObject.SetActive(true);
-        bulletHoleComponent.SetActive();
+        _bulletHolesObject[oldestIndex].SetActive();
         _bulletHolesActiveTime[oldestIndex] = Time.time;
-        return _bulletHolesObject[oldestIndex];
+        return _bulletHolesObject[oldestIndex].gameObject;
     }
 
     public GameObject RequestBulletShellObject()
@@ -146,14 +177,14 @@ public class ObjectPool : MonoBehaviour
 
         for (int i = 0; i < _bulletShellsObject.Length; i++)
         {
-            if (!_bulletShellsObject[i].activeSelf)
+            if (!_bulletShellsObject[i].gameObject.activeSelf)
             {
                 _bulletShellsObject[i].gameObject.SetActive(true);
-                _bulletShellsObject[i].GetComponent<SingleObject>().SetActive();
+                _bulletShellsObject[i].SetActive();
                 _bulletShellsActiveTime[i] = Time.time;
-                return _bulletShellsObject[i];
+                return _bulletShellsObject[i].gameObject;
             }
-            else //object is active (for when memory pool is all active)
+            else
             {
                 if (_bulletShellsActiveTime[i] < oldestTime)
                 {
@@ -163,15 +194,13 @@ public class ObjectPool : MonoBehaviour
             }
         }
 
-        Debug.Log("No BulletShells left in Memory Pool");
-        Debug.Log("Getting Oldest One");
+        Debug.Log("No BulletShells left in Memory Pool. Getting Oldest One.");
 
-        SingleObject BulletShellComponent = _bulletShellsObject[oldestIndex].GetComponent<SingleObject>();
-        BulletShellComponent.SetInactive();
+        _bulletShellsObject[oldestIndex].SetInactive();
         _bulletShellsObject[oldestIndex].gameObject.SetActive(true);
-        BulletShellComponent.SetActive();
+        _bulletShellsObject[oldestIndex].SetActive();
         _bulletShellsActiveTime[oldestIndex] = Time.time;
-        return _bulletShellsObject[oldestIndex];
+        return _bulletShellsObject[oldestIndex].gameObject;
     }
 
     public GameObject RequestBloodWallObject()
@@ -181,14 +210,14 @@ public class ObjectPool : MonoBehaviour
 
         for (int i = 0; i < _bloodWalls.Length; i++)
         {
-            if (!_bloodWalls[i].activeSelf)
+            if (!_bloodWalls[i].gameObject.activeSelf)
             {
                 _bloodWalls[i].gameObject.SetActive(true);
-                _bloodWalls[i].GetComponent<SingleObject>().SetActive();
+                _bloodWalls[i].SetActive();
                 _bloodWallsActiveTime[i] = Time.time;
-                return _bloodWalls[i];
+                return _bloodWalls[i].gameObject;
             }
-            else //object is active (for when memory pool is all active)
+            else
             {
                 if (_bloodWallsActiveTime[i] < oldestTime)
                 {
@@ -198,17 +227,45 @@ public class ObjectPool : MonoBehaviour
             }
         }
 
-        Debug.Log("No BulletShells left in Memory Pool");
-        Debug.Log("Getting Oldest One");
+        Debug.Log("No Blood Walls left in Memory Pool. Getting Oldest One.");
 
-        SingleObject BloodWallComponent = _bloodWalls[oldestIndex].GetComponent<SingleObject>();
-        BloodWallComponent.SetInactive();
+        _bloodWalls[oldestIndex].SetInactive();
         _bloodWalls[oldestIndex].gameObject.SetActive(true);
-        BloodWallComponent.SetActive();
+        _bloodWalls[oldestIndex].SetActive();
         _bloodWallsActiveTime[oldestIndex] = Time.time;
-        return _bloodWalls[oldestIndex];
+        return _bloodWalls[oldestIndex].gameObject;
     }
 
+    public GameObject RequestBloodVFX()
+    {
+        int oldestIndex = -1;
+        float oldestTime = float.MaxValue;
 
+        for (int i = 0; i < _bloodVFXs.Length; i++)
+        {
+            if (!_bloodVFXs[i].gameObject.activeSelf)
+            {
+                _bloodVFXs[i].gameObject.SetActive(true);
+                _bloodVFXs[i].SetActive();
+                _bloodVFXsActiveTime[i] = Time.time;
+                return _bloodVFXs[i].gameObject;
+            }
+            else
+            {
+                if (_bloodVFXsActiveTime[i] < oldestTime)
+                {
+                    oldestIndex = i;
+                    oldestTime = _bloodVFXsActiveTime[i];
+                }
+            }
+        }
 
+        Debug.Log("No Blood VFXs left in Memory Pool. Getting Oldest One.");
+
+        _bloodVFXs[oldestIndex].SetInactive();
+        _bloodVFXs[oldestIndex].gameObject.SetActive(true);
+        _bloodVFXs[oldestIndex].SetActive();
+        _bloodVFXsActiveTime[oldestIndex] = Time.time;
+        return _bloodVFXs[oldestIndex].gameObject;
+    }
 }

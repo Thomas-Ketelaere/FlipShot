@@ -1,19 +1,12 @@
 using UnityEngine;
 
-//pls do something about all these names TT
-public class BulletParticleSysComponent : MonoBehaviour
+public class BulletParticleSysComponent : SingleObject
 {
-    [SerializeField] private float LifeTime = 20f;
     [SerializeField] private ParticleSystem _bulletImpact;
 
-    public void SetActive()
+    public override void SetActive()
     {
-        Invoke("SetInactive", LifeTime);
+        base.SetActive();
         _bulletImpact.Play();
-    }
-    public void SetInactive()
-    {
-        CancelInvoke("SetInactive"); //when pool full, this one gets set inactive, so need to cancel for lifetime since it is shorter
-        gameObject.SetActive(false);
     }
 }

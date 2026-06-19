@@ -127,48 +127,22 @@ public class WeaponComponent : MonoBehaviour
             _gunAnimator.Play("FireWeapon", 0, 0f);
         }
 
-
-        //_muzzleFlash.Play();
-
         //JUST "EASY" RAYCAST
-        //SpawnBulletShell();
-
-        //StartCoroutine(MoveToPos(_bolt.transform, _bolt.transform.localPosition + new Vector3(0, 0, -0.07f), _fireRate / 3));
-        //StartCoroutine(MoveToPos(transform, transform.localPosition + new Vector3(0, 0, -0.05f), _fireRate / 3));
-        //Invoke("StartResetBolt", _fireRate / 3);
         RaycastHit hit;
         if (Physics.Raycast(_barrelPos.position, _barrelPos.forward, out hit, LayerMask.GetMask("Hittable", "Damageable")))
         {
             if (hit.collider.gameObject.CompareTag("Player") || hit.collider.gameObject.CompareTag("Enemy"))
             {
                 Debug.Log("Player/Enemy hit");
-                //get health comp and do damage
                 InjuryPart injuryPart = hit.collider.GetComponent<InjuryPart>();
                 if (injuryPart != null)
                 {
-                    injuryPart.BodyPartHit(_barrelPos.forward, hit.point);
+                    injuryPart.BodyPartHit(_barrelPos.forward, hit.point, hit.normal);
                 }
                 else
                 {
                     Debug.LogWarning("[WeaponController] Player/Enemy hit but doesnt have InjuryPart");
                 }
-
-                //GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
-                //bloodVFXObject.transform.position = hit.point;
-                //bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal);
-                //RaycastHit wallHit;
-                //if (Physics.Raycast(hit.point, transform.forward, out wallHit, DISTANCE_WALL_BLOOD, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player, TODO should do differently
-                //{
-                //    Debug.Log("Hit wall");
-                //    GameObject bloodObject = ObjectPool.Instance.RequestBloodWallObject();
-                //    if (bloodObject != null)
-                //    {
-                //        bloodObject.transform.position = wallHit.point + wallHit.normal * 0.01f;
-                //        Quaternion lookRot = Quaternion.LookRotation(-wallHit.normal);
-                //        lookRot *= Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward);
-                //        bloodObject.transform.rotation = lookRot;
-                //    }
-                //}
             }
 
             else if (hit.collider.gameObject.CompareTag("Object"))
@@ -217,16 +191,12 @@ public class WeaponComponent : MonoBehaviour
                 if (injuryPart != null)
                 {
                     Vector3 direction = _barrelPos.position - origin;
-                    injuryPart.BodyPartHit(direction, hit.point);
+                    injuryPart.BodyPartHit(direction, hit.point, hit.normal); //todo doesnt play blood in front of character for player feedback
                 }
                 else
                 {
                     Debug.LogWarning("[WeaponController] Player/Enemy hit but doesnt have InjuryPart");
                 }
-                //get health comp and do damage
-                //GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
-                //bloodVFXObject.transform.position = hit.point;
-                //bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal); //optimally should also show blood in front of character, since bullet goes through
             }
         }
         if (_currentAmountBullets == 0)
