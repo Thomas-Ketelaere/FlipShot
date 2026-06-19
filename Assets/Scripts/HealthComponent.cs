@@ -1,5 +1,11 @@
 using UnityEngine;
 
+public enum DamageSource
+{ 
+    Weapon,
+    Grenade
+}
+
 public abstract class HealthComponent : MonoBehaviour
 {
     [SerializeField] private uint _maxHealth = 2;
@@ -30,25 +36,33 @@ public abstract class HealthComponent : MonoBehaviour
         _currentHealth = _startHealth;
     }
 
-    public void InstantKill(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal)
+    public void InstantKill(Vector3 direction, Vector3 hitPoint, DamageSource damageSource, bool playBloodVFX = false, Vector3 hitPointNormal = default)
     {
-        PlayBloodVFX(direction, hitPoint, hitPointNormal);
+        if(playBloodVFX)
+        {
+            PlayBloodVFX(direction, hitPoint, hitPointNormal);
+        }
+
         if (_isDead) return;
-        Die(direction, hitPoint, hitPointNormal);
+        Die(direction, hitPoint, damageSource);
     }
 
-    public virtual void GetHit(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal)
+    public virtual void GetHit(Vector3 direction, Vector3 hitPoint, DamageSource damageSource, bool playBloodVFX = false, Vector3 hitPointNormal = default)
     {
-        PlayBloodVFX(direction, hitPoint, hitPointNormal);
+        if(playBloodVFX)
+        {
+            PlayBloodVFX(direction, hitPoint, hitPointNormal);
+        }
+
         if (_isDead) return;
         --_currentHealth;
         if (_currentHealth == 0)
         {
-            Die(direction, hitPoint, hitPointNormal);
+            Die(direction, hitPoint, damageSource);
         }
     }
 
-    protected virtual void Die(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal)
+    protected virtual void Die(Vector3 direction, Vector3 hitPoint, DamageSource damageSource)
     {
         _isDead = true;
     }

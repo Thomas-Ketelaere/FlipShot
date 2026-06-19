@@ -15,29 +15,29 @@ public class InjuryPart : MonoBehaviour //todo better name
     [SerializeField] private InjuryBodyPart _part;
     private HealthComponent _health;
 
+    public HealthComponent Health => _health;
+
     void Start()
     {
         _health = GetComponentInParent<HealthComponent>();
     }
 
-    public void BodyPartHit(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal) //send location and direction for blood vfx and ragdoll later
+    public void BodyPartBulletHit(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal) //send location and direction for blood vfx and ragdoll later
     {
         switch (_part)
         {
             case InjuryBodyPart.Head:
-                _health.InstantKill(direction, hitPoint, hitPointNormal);
+                _health.InstantKill(direction, hitPoint, DamageSource.Weapon, true, hitPointNormal);
                 break;
             case InjuryBodyPart.Torso:
-                _health.InstantKill(direction, hitPoint, hitPointNormal);
+                _health.InstantKill(direction, hitPoint, DamageSource.Weapon, true, hitPointNormal);
                 break;
             case InjuryBodyPart.Leg:
-                _health.GetHit(direction, hitPoint, hitPointNormal);
+                _health.GetHit(direction, hitPoint, DamageSource.Weapon, true, hitPointNormal);
                 break;
             case InjuryBodyPart.Arm:
-                _health.GetHit(direction, hitPoint, hitPointNormal);
+                _health.GetHit(direction, hitPoint, DamageSource.Weapon, true, hitPointNormal);
                 break;
         }
-
-        
     }
 }

@@ -137,7 +137,7 @@ public class WeaponComponent : MonoBehaviour
                 InjuryPart injuryPart = hit.collider.GetComponent<InjuryPart>();
                 if (injuryPart != null)
                 {
-                    injuryPart.BodyPartHit(_barrelPos.forward, hit.point, hit.normal);
+                    injuryPart.BodyPartBulletHit(_barrelPos.forward, hit.point, hit.normal);
                 }
                 else
                 {
@@ -191,7 +191,7 @@ public class WeaponComponent : MonoBehaviour
                 if (injuryPart != null)
                 {
                     Vector3 direction = _barrelPos.position - origin;
-                    injuryPart.BodyPartHit(direction, hit.point, hit.normal); //todo doesnt play blood in front of character for player feedback
+                    injuryPart.BodyPartBulletHit(direction, hit.point, hit.normal); //todo doesnt play blood in front of character for player feedback
                 }
                 else
                 {

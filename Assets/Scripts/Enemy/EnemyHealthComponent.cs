@@ -10,7 +10,8 @@ public class EnemyHealthComponent : HealthComponent
     private Animator _animator;
     private NavMeshAgent _agent;
 
-    private const float RAGDOLL_HIT_STRENGTH = 50f;
+    private const float RAGDOLL_BULLET_HIT_STRENGTH = 50f;
+    private const float RAGDOLL_GRENADE_HIT_STRENGTH = 50f;
     private const string ANIMATION_DAMAGE_NAME = "Damage02";
 
     protected override void Start()
@@ -58,15 +59,36 @@ public class EnemyHealthComponent : HealthComponent
         closestBone.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
     }
 
-    protected override void Die(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal)
+    public void EnableRagdollWithExplosionForce(Vector3 force, Vector3 explosionPoint)
     {
-        base.Die(direction, hitPoint, hitPointNormal);
-        EnableRagdollWithForce(direction * RAGDOLL_HIT_STRENGTH, hitPoint);
+        EnableRagdoll();
+
+        foreach (Rigidbody rb in _ragdollRigidbodies)
+        {
+            //rb.AddExplosionForce(force, explosionPoint, explosionRadius, 0.5f, ForceMode.Impulse);
+            rb.AddForceAtPosition(force, explosionPoint, ForceMode.Impulse);
+        }
     }
 
-    public override void GetHit(Vector3 direction, Vector3 hitPoint, Vector3 hitPointNormal)
+    protected override void Die(Vector3 direction, Vector3 hitPoint, DamageSource damageSource)
+    {
+        base.Die(direction, hitPoint, damageSource);
+        switch (damageSource)
+        {
+            case DamageSource.Weapon:
+                EnableRagdollWithForce(direction * RAGDOLL_BULLET_HIT_STRENGTH, hitPoint);
+                break;
+            case DamageSource.Grenade:
+                EnableRagdollWithExplosionForce(direction * RAGDOLL_GRENADE_HIT_STRENGTH, hitPoint);
+                break;
+        }
+
+        
+    }
+
+    public override void GetHit(Vector3 direction, Vector3 hitPoint, DamageSource damageSource, bool playBloodVFX = false, Vector3 hitPointNormal = default)
     {
         _animator.SetTrigger(ANIMATION_DAMAGE_NAME);
-        base.GetHit(direction, hitPoint, hitPointNormal);
+        base.GetHit(direction, hitPoint, damageSource);
     }
 }
