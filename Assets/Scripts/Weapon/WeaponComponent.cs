@@ -107,7 +107,7 @@ public class WeaponComponent : MonoBehaviour
         }
         else
         {
-            if (_shouldShoot && _currentAmountBullets > 0)
+            if (_shouldShoot && _currentAmountBullets > 0 && !_isReloading)
             {
                 Shoot();
                 _accumulatedTime -= _fireRate;

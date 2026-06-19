@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class RevertableBulletHole : RevertableBase
 {
-    private BulletParticleSysComponent _bulletParticleSysComponent;
+    private ParticleSystemSingleObject _bulletParticleSysComponent;
 
     protected override void Start()
     {
         base.Start();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         _playerControlsComponent = player.GetComponent<PlayerControlsComponent>();
-        _bulletParticleSysComponent = GetComponent<BulletParticleSysComponent>();
+        _bulletParticleSysComponent = GetComponent<ParticleSystemSingleObject>();
     }
 
     public override void RevertObject()
