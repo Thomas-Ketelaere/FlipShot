@@ -143,22 +143,32 @@ public class WeaponComponent : MonoBehaviour
             {
                 Debug.Log("Player/Enemy hit");
                 //get health comp and do damage
-                GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
-                bloodVFXObject.transform.position = hit.point;
-                bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal);
-                RaycastHit wallHit;
-                if (Physics.Raycast(hit.point, transform.forward, out wallHit, DISTANCE_WALL_BLOOD, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player
+                InjuryPart injuryPart = hit.collider.GetComponent<InjuryPart>();
+                if (injuryPart != null)
                 {
-                    Debug.Log("Hit wall");
-                    GameObject bloodObject = ObjectPool.Instance.RequestBloodWallObject();
-                    if (bloodObject != null)
-                    {
-                        bloodObject.transform.position = wallHit.point + wallHit.normal * 0.01f;
-                        Quaternion lookRot = Quaternion.LookRotation(-wallHit.normal);
-                        lookRot *= Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward);
-                        bloodObject.transform.rotation = lookRot;
-                    }
+                    injuryPart.BodyPartHit(_barrelPos.forward, hit.point);
                 }
+                else
+                {
+                    Debug.LogWarning("[WeaponController] Player/Enemy hit but doesnt have InjuryPart");
+                }
+
+                //GameObject bloodVFXObject = Instantiate(_bloodVFXObj); //todo should be done in player/enemy self
+                //bloodVFXObject.transform.position = hit.point;
+                //bloodVFXObject.transform.rotation = Quaternion.LookRotation(-hit.normal);
+                //RaycastHit wallHit;
+                //if (Physics.Raycast(hit.point, transform.forward, out wallHit, DISTANCE_WALL_BLOOD, LayerMask.GetMask("Hittable"))) //hits wall behind enemy/player, TODO should do differently
+                //{
+                //    Debug.Log("Hit wall");
+                //    GameObject bloodObject = ObjectPool.Instance.RequestBloodWallObject();
+                //    if (bloodObject != null)
+                //    {
+                //        bloodObject.transform.position = wallHit.point + wallHit.normal * 0.01f;
+                //        Quaternion lookRot = Quaternion.LookRotation(-wallHit.normal);
+                //        lookRot *= Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward);
+                //        bloodObject.transform.rotation = lookRot;
+                //    }
+                //}
             }
 
             else if (hit.collider.gameObject.CompareTag("Object"))

@@ -22,12 +22,14 @@ public class EnemyController : MonoBehaviour
         _agent.stoppingDistance = _stoppingDistance;
 
         _movementController = GetComponent<MovementController>();
-
-        _agent.SetDestination(Vector3.zero);
     }
 
     void Update()
     {
+        if (!_agent.enabled)
+        {
+            return;
+        }
         if (_agent.hasPath && _agent.remainingDistance > _agent.stoppingDistance)
         {
             Vector3 worldVelocity = _agent.desiredVelocity;

@@ -8,12 +8,10 @@ public class MovementController : MonoBehaviour
 
     [Header("Animation smoothing")]
     [SerializeField] private float _dampTime = 0.1f;
-    [SerializeField] private float _rotationSpeed = 3f; // How fast the character rotates
+    [SerializeField] private float _rotationSpeed = 3f;
 
     private Animator _animator;
-    private Vector2 _currentVelocity; // X = strafe, Z = forward/back
 
-    private static readonly int VelocityXHash = Animator.StringToHash("VelocityX");
     private static readonly int VelocityZHash = Animator.StringToHash("VelocityZ");
 
     private Vector3 _worldMoveDirection;
