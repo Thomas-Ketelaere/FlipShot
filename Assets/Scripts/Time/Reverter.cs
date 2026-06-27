@@ -38,9 +38,16 @@ public class Reverter : MonoBehaviour
     {
         _reverterLayerMask = LayerMask.GetMask(REVERTABLE_LAYER_NAME);
         _cameraTransform = Camera.main.transform;
-        if (_volume.sharedProfile.TryGet(out ChromaticAberration chromaticAberration))
+        if(_volume == null)
         {
-            _chromaticAberration = chromaticAberration;
+            Debug.LogWarning("[Reverter] No volume in this scene, will not display visual effect when entering temporal mode");
+        }
+        else
+        {
+            if (_volume.sharedProfile.TryGet(out ChromaticAberration chromaticAberration))
+            {
+                _chromaticAberration = chromaticAberration;
+            }
         }
         _revertableChecker = GetComponentInChildren<RevertableChecker>();
     }
@@ -112,14 +119,21 @@ public class Reverter : MonoBehaviour
     {
         _overlayCamera.SetActive(true);
         if (_temporalTransition != null) StopCoroutine(_temporalTransition);
-        _temporalTransition = StartCoroutine(LerpTemporalEffects(true, MAX_CHROMATIC_ABERRATION, MIN_DESATURATION_STRENGTH));
+
+        if (_chromaticAberration != null)
+        {
+            _temporalTransition = StartCoroutine(LerpTemporalEffects(true, MAX_CHROMATIC_ABERRATION, MIN_DESATURATION_STRENGTH));
+        }
         OnEnterTemporalMode?.Invoke();
     }
 
     private void OnTemporalModeStop()
     {
         if (_temporalTransition != null) StopCoroutine(_temporalTransition);
-        _temporalTransition = StartCoroutine(LerpTemporalEffects(false, 0f, 1f));
+        if (_chromaticAberration != null)
+        {
+            _temporalTransition = StartCoroutine(LerpTemporalEffects(false, 0f, 1f));
+        }
         OnExitTemporalMode?.Invoke();
     }
 
@@ -146,7 +160,10 @@ public class Reverter : MonoBehaviour
     private void OnDestroy()
     {
         _desaturationMat.SetFloat("_DesaturationStrength", 1);
-        _chromaticAberration.intensity.value = 0f;
+        if (_chromaticAberration != null)
+        {
+            _chromaticAberration.intensity.value = 0f;
+        }
     }
 
     #region UnityOnly
